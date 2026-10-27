@@ -1,0 +1,188 @@
+{
+  "study_title": "Note-Taking & Learning Study",
+  "video": {
+    "title": "Meet the tardigrade, the toughest animal on Earth",
+    "author": "Thomas Boothby (TED-Ed)",
+    "youtube_id": "IxndOd3kmSs",
+    "source_url": "https://www.youtube.com/watch?v=IxndOd3kmSs",
+    "total_seconds": 235
+  },
+  "parts": {
+    "A": {
+      "label": "Part 1",
+      "start": 0,
+      "end": 137,
+      "topic": "How tardigrades survive without water",
+      "ai_summary": "* Humans can survive only about 100 hours without water, but tardigrades can survive decades without it.\n* Tardigrades, also called water bears, are about 1 millimeter long and have eight legs.\n* Water is essential for metabolism, which involves biochemical reactions inside cells.\n* Tardigrades survive dehydration through anhydrobiosis, meaning “life without water.”\n* During dehydration, they enter a tun state, curling into a ball and folding their head and legs inward.\n* Special molecules form a protective matrix around DNA, proteins, and cell membranes, preventing damage.\n* When water returns, the matrix dissolves, leaving the cells functional again.\n* Tardigrades also tolerate freezing, extreme heat, high radiation, and the vacuum of space."
+    },
+    "B": {
+      "label": "Part 2",
+      "start": 137,
+      "end": 235,
+      "topic": "Where tardigrades live and why scientists study them",
+      "ai_summary": "* Earthly origin: Tardigrades are not aliens. Scientific evidence shows they evolved on Earth.\n* Species: More than 1,100 species are known, and many more may remain undiscovered.\n* Worldwide distribution: Tardigrades live on every continent, including Antarctica.\n* Habitats: They survive in deserts, polar ice, oceans, freshwater, rainforests, and high mountains.\n* Finding them: They can be found in moss and lichens in parks, yards, and forests using a microscope.\n* Survival research: Scientists study whether their protective tun state helps them survive other stressful conditions.\n* Practical applications: Research may help preserve vaccines and develop stress-resistant crops.\n* Space research: Their survival in space's vacuum may reveal life's limits and ways to protect astronauts."
+    }
+  },
+  "questions": {
+    "A": [
+      {
+        "id": "q01",
+        "type": "factual",
+        "text": "According to the video, a human can survive about ___ without water, while a tardigrade can last ___.",
+        "options": {
+          "A": "3 days / several years",
+          "B": "100 hours / several months",
+          "C": "100 hours / decades",
+          "D": "10 days / decades"
+        },
+        "answer": "C",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q02",
+        "type": "factual",
+        "text": "In the tun state, what does a tardigrade tuck inside its body?",
+        "options": {
+          "A": "Only its eight legs",
+          "B": "Its head and four front legs",
+          "C": "Its four back legs",
+          "D": "Its head and all eight legs"
+        },
+        "answer": "D",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q03",
+        "type": "factual",
+        "text": "Which cell components get trapped in the protective matrix?",
+        "options": {
+          "A": "DNA, sugars and mitochondria",
+          "B": "DNA, proteins and membranes",
+          "C": "Proteins, fats and ribosomes",
+          "D": "Membranes, water and enzymes"
+        },
+        "answer": "B",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q04",
+        "type": "conceptual",
+        "text": "The video says water matters for most organisms mainly because it...",
+        "options": {
+          "A": "allows metabolism, the chemical reactions in cells",
+          "B": "keeps cells at a stable, safe temperature",
+          "C": "carries oxygen to every cell in the body",
+          "D": "gives cells the shape they need to divide"
+        },
+        "answer": "A",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q05",
+        "type": "conceptual",
+        "text": "Cells without the tardigrade's special molecules are dried out. What would most likely happen to their DNA and proteins?",
+        "options": {
+          "A": "They would stay locked in place",
+          "B": "They would unfold, break apart or fuse",
+          "C": "They would turn into a protective matrix",
+          "D": "They would slow down but stay intact"
+        },
+        "answer": "B",
+        "summary_coverage": "partial"
+      },
+      {
+        "id": "q06",
+        "type": "conceptual",
+        "text": "Which statement best matches how the video describes anhydrobiosis?",
+        "options": {
+          "A": "A survival strategy found only in tardigrades",
+          "B": "Storing extra water inside a protective matrix",
+          "C": "A survival trick that only works when frozen",
+          "D": "A strategy also used by bacteria, plants and others"
+        },
+        "answer": "D",
+        "summary_coverage": "none"
+      }
+    ],
+    "B": [
+      {
+        "id": "q01",
+        "type": "factual",
+        "text": "About how many species of tardigrades are known?",
+        "options": {
+          "A": "Over 1,100",
+          "B": "About 110",
+          "C": "About 11,000",
+          "D": "Over 110,000"
+        },
+        "answer": "A",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q02",
+        "type": "factual",
+        "text": "Where can you commonly find tardigrades near people?",
+        "options": {
+          "A": "In tap water and puddles",
+          "B": "In house dust and carpets",
+          "C": "In moss and lichens",
+          "D": "In garden soil and compost"
+        },
+        "answer": "C",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q03",
+        "type": "factual",
+        "text": "Which list matches environments mentioned in the video?",
+        "options": {
+          "A": "Deserts, caves, rainforests, volcanoes",
+          "B": "Ice sheets, caves, deep-sea vents, peaks",
+          "C": "Rainforests, volcanoes, swamps, glaciers",
+          "D": "Deserts, ice sheets, rainforests, high peaks"
+        },
+        "answer": "D",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q04",
+        "type": "conceptual",
+        "text": "Why does the video reject the idea that tardigrades came from outer space?",
+        "options": {
+          "A": "They die quickly in a vacuum",
+          "B": "Evidence shows they evolved on Earth",
+          "C": "No similar animals were found in space",
+          "D": "They only survive at Earth's temperatures"
+        },
+        "answer": "B",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q05",
+        "type": "conceptual",
+        "text": "How could tardigrade research help with vaccines?",
+        "options": {
+          "A": "By growing viruses inside tardigrade cells",
+          "B": "By making vaccines that resist radiation",
+          "C": "By stabilizing the sensitive molecules inside them",
+          "D": "By replacing animal testing with tardigrades"
+        },
+        "answer": "C",
+        "summary_coverage": "partial"
+      },
+      {
+        "id": "q06",
+        "type": "conceptual",
+        "text": "What \"fundamental question\" could tardigrades help answer, according to the video?",
+        "options": {
+          "A": "Could life survive on harsher planets?",
+          "B": "How did the very first animals evolve?",
+          "C": "Could humans ever survive without water?",
+          "D": "Why do some species go extinct quickly?"
+        },
+        "answer": "A",
+        "summary_coverage": "none"
+      }
+    ]
+  }
+}

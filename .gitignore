@@ -222,3 +222,7 @@ __marimo__/
 # Project-specific
 data/private/
 data/simulated/
+
+# Local app responses
+data/app_responses/
+.venv/
