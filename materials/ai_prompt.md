@@ -4,7 +4,7 @@ Each summary was generated **once**, in a separate new ChatGPT chat per part, an
 **unchanged** to every participant in the AI condition. Summaries were requested as bullet points
 to mirror the format of typical handwritten notes.
 
-- **Model:** _fill in (the model name shown in ChatGPT)_
+- **Model:** GPT-6 in ChatGPT (as shown in the ChatGPT interface)
 - **Date generated:** 2026-10-27
 - **Source transcript:** Spanish-language YouTube transcript (translation by Lidia Camara de la Fuente,
   reviewed by Ciro Gomez) of "Meet the tardigrade, the toughest animal on Earth"
@@ -47,18 +47,18 @@ English. Do not add any information that is not in the transcript.
 
 ## Coverage check (does the summary contain each quiz answer?)
 
-Assessed before data collection; stored per item as `summary_coverage` in
+Assessed before data collection (quiz version 1.1.0); stored per item as `summary_coverage` in
 `materials/study_materials.json` and carried into `answer_key.csv`.
 
 | Item | Part 1 | Part 2 |
 |---|---|---|
 | q01 | full | full |
-| q02 | full | full |
+| q02 | partial ("head and legs", not "all eight legs") | full |
 | q03 | full | full |
-| q04 | full | full |
+| q04 | partial (matrix mentioned, not that it replaces water) | full |
 | q05 | partial ("preventing damage", not unfold/break/fuse) | partial ("preserve vaccines", not stabilizing molecules) |
-| q06 | none (other organisms not mentioned) | none (habitable-planets question not mentioned) |
+| q06 | none (other organisms not mentioned) | none (harsher-planets question not mentioned) |
 
-**Total: 8 of 12 full, 2 partial, 2 none.** The summaries were not regenerated or edited:
+**Total: 6 of 12 full, 4 partial, 2 none.** The summaries were not regenerated or edited:
 omissions are part of what relying on an AI summary means in practice. A robustness analysis
-repeats the primary comparison on the 8 fully covered items only.
+repeats the primary comparison on the 6 fully covered items only.

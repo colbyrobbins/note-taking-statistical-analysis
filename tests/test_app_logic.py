@@ -12,17 +12,31 @@ import ingest_app_data  # noqa: E402
 import logic  # noqa: E402
 
 
-def test_allocation_keeps_sequences_balanced():
+def test_allocation_keeps_sequences_close_to_balanced():
     rng = random.Random(0)
     completed = []
-    for _ in range(31):
+    for _ in range(30):
         completed.append(logic.choose_sequence(completed, rng))
     counts = pd.Series(completed).value_counts()
-    assert counts.max() - counts.min() <= 1
+    assert counts.max() - counts.min() <= 4
+
+
+def test_allocation_favors_the_sequence_that_is_behind():
+    rng = random.Random(1)
+    picks = [logic.choose_sequence([1, 1, 1, 2], rng) for _ in range(3000)]
+    share_behind = picks.count(2) / len(picks)
+    assert abs(share_behind - logic.EFRON_P) < 0.03
+
+
+def test_simultaneous_starts_are_not_all_assigned_the_same_sequence():
+    # e.g. 20 people pressing "Begin" at once while the counts are 5 vs 3
+    rng = random.Random(2)
+    picks = [logic.choose_sequence([1] * 5 + [2] * 3, rng) for _ in range(20)]
+    assert len(set(picks)) == 2
 
 
 def test_allocation_ignores_unknown_sequences():
-    assert logic.choose_sequence([1, 1, 1, 99], random.Random(0)) == 2
+    assert logic.choose_sequence([99, 99], random.Random(0)) in logic.SEQUENCES
 
 
 def test_every_sequence_uses_both_methods_once():
@@ -102,3 +116,18 @@ def test_header_written_to_empty_sheet_in_any_gspread_format():
 
     with pytest.raises(RuntimeError):
         storage.ensure_header(FakeWorksheet([["something else"]]))
+
+
+def test_local_store_logs_starts_and_balances_on_them(tmp_path):
+    import storage
+
+    store = storage.LocalCSVStore(tmp_path / "responses.csv", tmp_path / "allocations.csv")
+    rng = random.Random(3)
+    for i in range(12):
+        seq = logic.choose_sequence(store.started_sequences(), rng)
+        store.log_allocation({"participant_id": f"P-{i}", "is_pilot": False, "sequence": seq})
+    store.log_allocation({"participant_id": "P-pilot", "is_pilot": True, "sequence": 1})
+    started = store.started_sequences()
+    assert len(started) == 12  # pilot start ignored
+    counts = pd.Series(started).value_counts()
+    assert counts.max() - counts.min() <= 4

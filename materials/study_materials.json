@@ -49,7 +49,7 @@
           "D": "Its head and all eight legs"
         },
         "answer": "D",
-        "summary_coverage": "full"
+        "summary_coverage": "partial"
       },
       {
         "id": "q03",
@@ -59,7 +59,7 @@
           "A": "DNA, sugars and mitochondria",
           "B": "DNA, proteins and membranes",
           "C": "Proteins, fats and ribosomes",
-          "D": "Membranes, water and enzymes"
+          "D": "Enzymes, membranes and fats"
         },
         "answer": "B",
         "summary_coverage": "full"
@@ -67,25 +67,25 @@
       {
         "id": "q04",
         "type": "conceptual",
-        "text": "The video says water matters for most organisms mainly because it...",
+        "text": "According to the video, how do tardigrades survive without water when most organisms cannot?",
         "options": {
-          "A": "allows metabolism, the chemical reactions in cells",
-          "B": "keeps cells at a stable, safe temperature",
-          "C": "carries oxygen to every cell in the body",
-          "D": "gives cells the shape they need to divide"
+          "A": "They replace the lost water with a matrix of special molecules",
+          "B": "They store enough water in their bodies to last for decades",
+          "C": "They pull moisture out of the air through their eight legs",
+          "D": "They switch to a metabolism that does not need any water"
         },
         "answer": "A",
-        "summary_coverage": "full"
+        "summary_coverage": "partial"
       },
       {
         "id": "q05",
         "type": "conceptual",
-        "text": "Cells without the tardigrade's special molecules are dried out. What would most likely happen to their DNA and proteins?",
+        "text": "Imagine dried-out cells that cannot make the tardigrade's special molecules. Based on the video, what would most likely happen to their DNA and proteins?",
         "options": {
-          "A": "They would stay locked in place",
+          "A": "They would stay safely locked in place",
           "B": "They would unfold, break apart or fuse",
-          "C": "They would turn into a protective matrix",
-          "D": "They would slow down but stay intact"
+          "C": "They would be repaired once water returns",
+          "D": "They would turn into a protective matrix"
         },
         "answer": "B",
         "summary_coverage": "partial"
@@ -93,12 +93,12 @@
       {
         "id": "q06",
         "type": "conceptual",
-        "text": "Which statement best matches how the video describes anhydrobiosis?",
+        "text": "Which statement about anhydrobiosis matches the video?",
         "options": {
-          "A": "A survival strategy found only in tardigrades",
-          "B": "Storing extra water inside a protective matrix",
-          "C": "A survival trick that only works when frozen",
-          "D": "A strategy also used by bacteria, plants and others"
+          "A": "It was first discovered in tardigrades in Antarctica",
+          "B": "It works by storing extra water inside the cells",
+          "C": "It requires tardigrades to stay frozen until water returns",
+          "D": "Bacteria, archaea and plants can also survive drying out"
         },
         "answer": "D",
         "summary_coverage": "none"
@@ -121,7 +121,7 @@
       {
         "id": "q02",
         "type": "factual",
-        "text": "Where can you commonly find tardigrades near people?",
+        "text": "According to the video, where can you commonly find tardigrades near people?",
         "options": {
           "A": "In tap water and puddles",
           "B": "In house dust and carpets",
@@ -139,7 +139,7 @@
           "A": "Deserts, caves, rainforests, volcanoes",
           "B": "Ice sheets, caves, deep-sea vents, peaks",
           "C": "Rainforests, volcanoes, swamps, glaciers",
-          "D": "Deserts, ice sheets, rainforests, high peaks"
+          "D": "Deserts, ice sheets, rainforests, peaks"
         },
         "answer": "D",
         "summary_coverage": "full"
@@ -149,10 +149,10 @@
         "type": "conceptual",
         "text": "Why does the video reject the idea that tardigrades came from outer space?",
         "options": {
-          "A": "They die quickly in a vacuum",
-          "B": "Evidence shows they evolved on Earth",
-          "C": "No similar animals were found in space",
-          "D": "They only survive at Earth's temperatures"
+          "A": "No tardigrade has ever been sent into space",
+          "B": "Scientific evidence shows they evolved on Earth",
+          "C": "Space agencies tested them and found no alien traits",
+          "D": "They are far too large to travel on meteorites"
         },
         "answer": "B",
         "summary_coverage": "full"
@@ -160,12 +160,12 @@
       {
         "id": "q05",
         "type": "conceptual",
-        "text": "How could tardigrade research help with vaccines?",
+        "text": "According to the video, how could tardigrade research help with vaccines?",
         "options": {
-          "A": "By growing viruses inside tardigrade cells",
-          "B": "By making vaccines that resist radiation",
-          "C": "By stabilizing the sensitive molecules inside them",
-          "D": "By replacing animal testing with tardigrades"
+          "A": "By growing the vaccine viruses inside tardigrade cells",
+          "B": "By adding tardigrade proteins to every vaccine dose",
+          "C": "By applying how tardigrades stabilize sensitive molecules",
+          "D": "By testing all new vaccines on tardigrades first"
         },
         "answer": "C",
         "summary_coverage": "partial"
@@ -173,16 +173,17 @@
       {
         "id": "q06",
         "type": "conceptual",
-        "text": "What \"fundamental question\" could tardigrades help answer, according to the video?",
+        "text": "According to the video, what big question could tardigrade research help answer?",
         "options": {
-          "A": "Could life survive on harsher planets?",
-          "B": "How did the very first animals evolve?",
-          "C": "Could humans ever survive without water?",
-          "D": "Why do some species go extinct quickly?"
+          "A": "Whether life could survive on far harsher planets",
+          "B": "How the very first animals evolved on Earth",
+          "C": "Whether humans could ever survive without water",
+          "D": "Why some species go extinct much faster than others"
         },
         "answer": "A",
         "summary_coverage": "none"
       }
     ]
-  }
+  },
+  "contact_email": ""
 }
