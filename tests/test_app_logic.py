@@ -73,3 +73,32 @@ def test_ingest_produces_pipeline_files(tmp_path):
     assert (tmp_path / "pilot" / "app_responses_pilot.csv").exists()
     assert set(assign["method"]) == {"handwritten", "ai"}
     assert (tmp_path / "raw" / "answer_key.csv").exists()
+
+
+class FakeWorksheet:
+    def __init__(self, values):
+        self.values = values
+
+    def row_values(self, i):
+        return [c for c in self.values[i - 1] if c] if len(self.values) >= i else []
+
+    def get_all_values(self):
+        return self.values
+
+    def append_row(self, row, value_input_option=None):
+        self.values = [v for v in self.values if any(v)] + [list(row)]
+
+
+def test_header_written_to_empty_sheet_in_any_gspread_format():
+    import pytest
+    import storage
+
+    for empty in ([], [[]], [[""]]):
+        ws = FakeWorksheet(empty)
+        storage.ensure_header(ws)
+        assert ws.values[0] == logic.FIELDNAMES
+        storage.ensure_header(ws)  # second call is a no-op
+        assert len(ws.values) == 1
+
+    with pytest.raises(RuntimeError):
+        storage.ensure_header(FakeWorksheet([["something else"]]))

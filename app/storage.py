@@ -51,6 +51,20 @@ class LocalCSVStore:
             w.writerow({k: record.get(k, "") for k in FIELDNAMES})
 
 
+def ensure_header(ws) -> None:
+    """Write the header row into an empty sheet; refuse to touch a sheet that holds other data.
+
+    gspread returns an empty sheet as [] or [[]] depending on the version, so emptiness is
+    checked cell by cell rather than with `not values`.
+    """
+    if ws.row_values(1) == FIELDNAMES:
+        return
+    values = ws.get_all_values()
+    if any(str(cell).strip() for row in values for cell in row):
+        raise RuntimeError("The Google Sheet's header row does not match the app's fields.")
+    ws.append_row(FIELDNAMES, value_input_option="RAW")
+
+
 class GoogleSheetStore:
     name = "Google Sheet"
 
@@ -59,11 +73,7 @@ class GoogleSheetStore:
 
         client = gspread.service_account_from_dict(dict(service_account_info))
         self.ws = client.open_by_key(sheet_key).sheet1
-        if self.ws.row_values(1) != FIELDNAMES:
-            if not self.ws.get_all_values():
-                self.ws.append_row(FIELDNAMES, value_input_option="RAW")
-            else:
-                raise RuntimeError("The Google Sheet's header row does not match the app's fields.")
+        ensure_header(self.ws)
 
     def completed_sequences(self) -> list[int]:
         return _completed_from_rows(self.ws.get_all_records())
