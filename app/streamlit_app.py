@@ -145,7 +145,7 @@ def header() -> None:
     st.markdown(
         f"""<div class="hero"><div class="kicker">Duke University · AIPI 510 Research Study</div>
         <h1>{M['study_title']}</h1>
-        <div class="sub">About 10 minutes · Anonymous · Voluntary</div></div>""",
+        <div class="sub">About 10 minutes</div></div>""",
         unsafe_allow_html=True,
     )
     i = STEPS.index(ss.step)
@@ -180,7 +180,7 @@ def page_consent() -> None:
         <ul><li>Participation is voluntary. You can stop at any time by closing this page.</li>
         <li>We do not collect your name, email or any identifying information. You get a random ID.</li>
         <li>Anonymous responses will be used for a class project and shared publicly on GitHub.</li></ul>
-        <p class="muted" style="margin-top:12px">Researchers: Alberto Gómez &amp; Colby Robbins · AIPI 510, Duke University</p>"""
+        <p class="muted" style="margin-top:12px">Researchers: Alberto Gómez &amp; Colby Robbins</p>"""
     )
     with st.form("consent"):
         agree = st.checkbox("I am 18 or older, I have read the information above, and I agree to take part.")
@@ -230,7 +230,7 @@ def page_setup() -> None:
         <ul><li>Have a <b>pen and a sheet of paper</b> ready.</li>
         <li>Turn your <b>sound on</b> (headphones are best). English captions are available in the player.</li>
         <li>Find a quiet place and give the study your full attention for about 10 minutes.</li>
-        <li>Watch each part <b>once</b>, without pausing or rewinding, and do not look anything up.</li>
+        <li>Do not look anything up while you work.</li>
         <li>Please <b>do not refresh</b> this page, or you will have to start over.</li></ul>"""
     )
     if st.button("Begin the study", type="primary", width="stretch"):
@@ -337,6 +337,8 @@ def page_review(part: str) -> None:
         st.caption(f"Take as long as you need, up to 2 minutes. The quiz starts automatically in {fmt(left)}.")
 
     timer()
+    st.markdown('<div class="notice">📄 <b>Please put away notes before accessing quiz.</b></div>',
+                unsafe_allow_html=True)
     if st.button("I'm ready · Start the quiz", type="primary", width="stretch", key=f"ready_{part}"):
         finish_review(part, timed_out=False)
         st.rerun()
@@ -465,5 +467,5 @@ elif step.endswith("_quiz"):
     page_quiz(step[0])
 else:
     page_done()
-st.markdown('<div class="foot">Duke University · AIPI 510 Module Project 2 · Anonymous research study</div>',
+st.markdown('<div class="foot">Anonymous research study</div>',
             unsafe_allow_html=True)
