@@ -6,8 +6,11 @@ Output (in --out-dir, default data/raw/):
     assignments.csv      participant x part: participant_id, sequence, session_order, video, method
     answer_key.csv       video, question_id, question_type, correct_answer (from materials/)
     participants.csv     one row per participant: background answers incl. exclusion fields
-    session_process.csv  participant x part: watch/review/quiz seconds, predicted score, compliance
-Pilot rows (is_pilot = True) are written to data/pilot/app_responses_pilot.csv and excluded.
+    session_process.csv  participant x part: watch/review/quiz seconds, predicted score, compliance,
+                         notes in the AI part, pausing/rewinding, use of material during the quiz
+    allocations.csv      every non-pilot start (from the "allocations" tab, if exported to
+                         data/raw/app_allocations.csv) with completed = True/False -> drop-out by sequence
+Pilot rows (is_pilot = True) are written to data/pilot/ and excluded.
 
 Part 1 of the video is "A" and Part 2 is "B"; Part 1 is always watched first.
 
@@ -24,10 +27,11 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_RAW = ROOT / "data" / "raw"
 
 MATERIALS = ROOT / "materials" / "study_materials.json"
-BACKGROUND = ["student_status", "native_english", "usual_note_method", "ai_summary_use",
-              "prior_knowledge", "attention_check"]
+BACKGROUND = ["taken_before_or_seen_video", "age_range", "student_status", "native_english", "device",
+              "usual_note_method", "ai_summary_use", "prior_knowledge", "attention_check"]
 PROCESS = ["method", "watch_seconds", "review_seconds", "review_timed_out", "quiz_seconds",
-           "predicted_correct", "compliance", "used_material_during_quiz"]
+           "predicted_correct", "compliance", "ai_part_wrote_notes", "paused_or_rewound",
+           "used_material_during_quiz"]
 PARTS = {"A": ("p1", 1), "B": ("p2", 2)}
 
 
@@ -71,6 +75,7 @@ def main(argv=None):
     parser.add_argument("--app-file", type=Path, default=DATA_RAW / "app_responses.csv")
     parser.add_argument("--out-dir", type=Path, default=DATA_RAW)
     parser.add_argument("--pilot-dir", type=Path, default=ROOT / "data" / "pilot")
+    parser.add_argument("--alloc-file", type=Path, default=DATA_RAW / "app_allocations.csv")
     args = parser.parse_args(argv)
 
     materials = json.loads(MATERIALS.read_text(encoding="utf-8"))
@@ -91,6 +96,13 @@ def main(argv=None):
     for name, df in to_raw_tables(real, n_questions).items():
         df.to_csv(args.out_dir / name, index=False)
     answer_key(materials).to_csv(args.out_dir / "answer_key.csv", index=False)
+
+    if args.alloc_file.exists():
+        alloc_real, _ = split_pilot(pd.read_csv(args.alloc_file, dtype=str))
+        alloc_real = alloc_real.drop_duplicates("participant_id")
+        alloc_real["completed"] = alloc_real["participant_id"].isin(real["participant_id"])
+        alloc_real.to_csv(args.out_dir / "allocations.csv", index=False)
+        print(f"{len(alloc_real)} starts, {int(alloc_real['completed'].sum())} completed (allocations.csv)")
     print(f"{len(real)} participants ingested ({len(pilot)} pilot rows set aside) -> {args.out_dir}")
 
 

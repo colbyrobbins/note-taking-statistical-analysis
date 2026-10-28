@@ -24,7 +24,7 @@ from logic import (  # noqa: E402
 )
 from storage import get_store  # noqa: E402
 
-st.set_page_config(page_title="Note-Taking & Learning Study · Duke", page_icon="📝", layout="centered")
+st.set_page_config(page_title="Note-Taking & Learning Study", page_icon=":material/edit_note:", layout="centered")
 
 NAVY = "#012169"
 STEPS = ["consent", "background", "setup", "A_watch", "A_review", "A_quiz", "B_watch", "B_review", "B_quiz", "done"]
@@ -33,48 +33,88 @@ METHOD_LABEL = {"handwritten": "Handwritten notes", "ai": "AI summary"}
 st.markdown(
     f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-html, body, .stApp, .stMarkdown, .stRadio, .stCheckbox, button, input, textarea {{
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+:root {{
+  --accent: {NAVY}; --accent-hover: #0b2f7e; --ink: #202124; --ink-2: #3c4043; --ink-3: #5f6368;
+  --line: #dadce0; --line-soft: #e8eaed; --page: #f8f9fa; --surface: #ffffff; --tint: #eef2fa;
+  --shadow-1: 0 1px 2px rgba(60,64,67,.30), 0 1px 3px 1px rgba(60,64,67,.15);
+  --shadow-2: 0 1px 3px rgba(60,64,67,.30), 0 4px 8px 3px rgba(60,64,67,.15);
 }}
-#MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDecoration"], [data-testid="stStatusWidget"] {{ display: none !important; }}
+html, body, .stApp, .stMarkdown, .stRadio, .stCheckbox, button, input, textarea {{
+  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}}
+#MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDecoration"], [data-testid="stStatusWidget"],
+[data-testid="stHeaderActionElements"] {{ display: none !important; }}
 header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
-.stApp {{ background: #f1f3f4; }}
-.block-container {{ max-width: 760px; padding-top: 1.5rem !important; padding-bottom: 4rem; }}
+.stApp {{ background: var(--page); }}
+.block-container {{ max-width: 720px; padding-top: 2rem !important; padding-bottom: 4rem; }}
 
-.hero {{ background: #fff; border: 1px solid #dadce0; border-top: 10px solid {NAVY}; border-radius: 12px;
-         padding: 22px 26px 18px; margin-bottom: 14px; }}
-.hero .kicker {{ font-size: 12px; font-weight: 600; letter-spacing: .08em; color: {NAVY}; text-transform: uppercase; }}
-.hero h1 {{ font-size: 28px; line-height: 1.2; font-weight: 600; color: #202124; margin: 6px 0 4px; padding: 0; }}
-.hero .sub {{ color: #5f6368; font-size: 14px; }}
+/* header card, Google Forms style */
+.hero {{ background: var(--surface); border: 1px solid var(--line); border-top: 8px solid var(--accent);
+         border-radius: 8px; padding: 22px 24px 20px; margin-bottom: 12px; }}
+.hero .kicker {{ font-size: 12px; font-weight: 500; letter-spacing: .06em; color: var(--accent); text-transform: uppercase; }}
+.hero h1 {{ font-size: 30px; line-height: 1.25; font-weight: 400; color: var(--ink); margin: 8px 0 6px; padding: 0; letter-spacing: 0; }}
+.hero .names {{ color: var(--ink-2); font-size: 16px; font-weight: 500; margin-bottom: 2px; }}
+.hero .sub {{ color: var(--ink-3); font-size: 14px; }}
 
-.prog-wrap {{ margin: 2px 4px 16px; }}
-.prog {{ height: 6px; background: #e3e6ea; border-radius: 99px; overflow: hidden; }}
-.prog > div {{ height: 100%; background: {NAVY}; border-radius: 99px; transition: width .4s ease; }}
-.prog-label {{ font-size: 12px; color: #5f6368; margin-top: 6px; display: flex; justify-content: space-between; }}
+.prog-wrap {{ margin: 4px 2px 16px; }}
+.prog {{ height: 4px; background: var(--line-soft); border-radius: 2px; overflow: hidden; }}
+.prog > div {{ height: 100%; background: var(--accent); transition: width .5s cubic-bezier(.2,0,0,1); }}
+.prog-label {{ font-size: 12px; color: var(--ink-3); margin-top: 8px; display: flex; justify-content: space-between; }}
 
-.card {{ background: #fff; border: 1px solid #dadce0; border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; color: #202124; }}
-.card h3 {{ font-size: 18px; font-weight: 600; margin: 0 0 8px; padding: 0; color: #202124; }}
-.card p, .card li {{ font-size: 15px; line-height: 1.6; color: #3c4043; }}
-.card ul {{ margin: 6px 0 0 0; padding-left: 20px; }}
-.card .muted {{ color: #5f6368; font-size: 13px; }}
-.pill {{ display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 99px;
-         background: #e8edf7; color: {NAVY}; margin-bottom: 10px; }}
-.pill.ai {{ background: #e6f4ea; color: #137333; }}
-.summary {{ background: #f8f9fa; border-left: 4px solid #137333; border-radius: 8px; padding: 14px 16px;
-            font-size: 16px; line-height: 1.7; color: #202124; }}
-.notice {{ background: #fef7e0; border: 1px solid #f9e2a7; border-radius: 10px; padding: 12px 16px; color: #5f4b00; font-size: 14px; margin-bottom: 14px; }}
-.score {{ display: flex; gap: 12px; margin-top: 8px; }}
-.score div {{ flex: 1; background: #f8f9fa; border-radius: 10px; padding: 14px; text-align: center; }}
-.score b {{ display: block; font-size: 26px; color: {NAVY}; }}
-.score span {{ font-size: 13px; color: #5f6368; }}
-.video-meta {{ font-size: 13px; color: #5f6368; margin: 4px 2px 12px; }}
+.card {{ background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px;
+         margin-bottom: 12px; color: var(--ink); }}
+.card h3 {{ font-size: 18px; font-weight: 500; margin: 0 0 8px; padding: 0; color: var(--ink); }}
+.card h3 + p, .card p {{ font-size: 15px; line-height: 1.6; color: var(--ink-2); margin: 0 0 8px; }}
+.card li {{ font-size: 15px; line-height: 1.6; color: var(--ink-2); margin-bottom: 4px; }}
+.card ul {{ margin: 6px 0 4px; padding-left: 20px; }}
+.card .section {{ margin-top: 18px; }}
+.card .muted {{ color: var(--ink-3); font-size: 13px; }}
+.card a {{ color: var(--accent); }}
 
-[data-testid="stForm"] {{ background: #fff; border: 1px solid #dadce0 !important; border-radius: 12px; padding: 22px 24px; }}
-.stRadio > label p, .stRadio [data-testid="stWidgetLabel"] p {{ font-weight: 600 !important; color: #202124; font-size: 15px; line-height: 1.5; }}
-.q-sep {{ border-top: 1px solid #eceef1; margin: 6px 0 14px; }}
-.stButton > button, .stFormSubmitButton > button {{ border-radius: 8px; font-weight: 600; padding: .55rem 1.2rem; }}
-.foot {{ text-align: center; color: #80868b; font-size: 12px; margin-top: 26px; }}
+.chip {{ display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--ink-2);
+         border: 1px solid var(--line); border-radius: 8px; padding: 5px 12px; margin-bottom: 14px; background: var(--surface); }}
+.chip .dot {{ width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }}
+.chip .dot.ai {{ background: #188038; }}
+
+.summary {{ background: var(--page); border: 1px solid var(--line-soft); border-radius: 8px; padding: 16px 20px;
+            font-size: 15px; line-height: 1.7; color: var(--ink); }}
+.summary ul {{ margin: 0; padding-left: 20px; }}
+.summary li {{ margin-bottom: 6px; color: var(--ink); }}
+.notice {{ background: var(--tint); border-radius: 8px; padding: 12px 16px; color: #1f2a44; font-size: 14px;
+           line-height: 1.5; margin-bottom: 12px; }}
+.notice.pilot {{ background: #fef7e0; color: #5c4200; }}
+
+.score {{ display: flex; gap: 12px; margin-top: 10px; }}
+.score div {{ flex: 1; background: var(--page); border: 1px solid var(--line-soft); border-radius: 8px; padding: 16px; text-align: center; }}
+.score b {{ display: block; font-size: 30px; font-weight: 400; color: var(--accent); }}
+.score span {{ font-size: 13px; color: var(--ink-3); }}
+.video-meta {{ font-size: 13px; color: var(--ink-3); margin: 6px 2px 14px; }}
+iframe {{ border-radius: 8px; }}
+
+/* forms and questions */
+[data-testid="stForm"] {{ background: var(--surface); border: 1px solid var(--line) !important; border-radius: 8px; padding: 24px; }}
+.form-title {{ font-size: 20px; font-weight: 400; color: var(--ink); margin: 0 0 4px; }}
+.form-sub {{ font-size: 14px; color: var(--ink-3); margin: 0 0 6px; }}
+.stRadio [data-testid="stWidgetLabel"] p, .stRadio > label p {{ font-weight: 500 !important; color: var(--ink); font-size: 15px; line-height: 1.5; }}
+.stRadio [role="radiogroup"] label, .stCheckbox label {{ border-radius: 6px; padding: 5px 10px; margin: 1px 0;
+  transition: background-color .15s ease; }}
+.stRadio [role="radiogroup"] label:hover, .stCheckbox label:hover {{ background: #f1f3f4; }}
+.stRadio [role="radiogroup"] p, .stCheckbox p {{ font-size: 14.5px; color: var(--ink-2); }}
+.q-sep {{ border-top: 1px solid var(--line-soft); margin: 10px 0 16px; }}
+.q-label {{ font-size: 15px; font-weight: 500; color: var(--ink); margin: 8px 0 2px; }}
+
+/* buttons: flat at rest, elevation on hover, pressed on click */
+.stButton > button, .stFormSubmitButton > button {{
+  border-radius: 6px; font-weight: 500; letter-spacing: .01em; min-height: 44px; padding: .55rem 1.4rem;
+  box-shadow: none; transition: box-shadow .2s ease, background-color .2s ease, transform .08s ease; }}
+.stButton > button:hover, .stFormSubmitButton > button:hover {{ box-shadow: var(--shadow-1); background-color: var(--accent-hover);
+  border-color: var(--accent-hover); color: #fff; }}
+.stButton > button:active, .stFormSubmitButton > button:active {{ box-shadow: var(--shadow-2); transform: translateY(1px); }}
+.stButton > button:focus-visible, .stFormSubmitButton > button:focus-visible {{ outline: 2px solid var(--accent); outline-offset: 2px; }}
+[data-testid="stAlert"] {{ border-radius: 8px; }}
+.foot {{ text-align: center; color: #80868b; font-size: 12px; margin-top: 28px; }}
 </style>
 """,
     unsafe_allow_html=True,
@@ -137,18 +177,29 @@ def method_of(part: str) -> str:
     return SEQUENCES[int(ss.rec["sequence"])][part]
 
 
+def contact_paragraph() -> str:
+    email = str(M.get("contact_email", "")).strip()
+    return f'<p class="muted">Questions? Email <a href="mailto:{email}">{email}</a></p>' if email else ""
+
+
+def contact_line() -> str:
+    email = str(M.get("contact_email", "")).strip()
+    return f" - Questions: <a href='mailto:{email}'>{email}</a>" if email else ""
+
+
 def card(html: str) -> None:
     st.markdown(f'<div class="card">{html}</div>', unsafe_allow_html=True)
 
 
 def header() -> None:
     st.markdown(
-        f"""<div class="hero"><div class="kicker">Duke University · AIPI 510 Research Study</div>
+        f"""<div class="hero"><div class="kicker">AIPI 510 - Project 2</div>
         <h1>{M['study_title']}</h1>
-        <div class="sub">About 10 minutes</div></div>""",
+        <div class="names">Alberto Gómez &amp; Colby Robbins</div>
+        <div class="sub">Duke University - About 10 minutes</div></div>""",
         unsafe_allow_html=True,
     )
-    i = STEPS.index(ss.step)
+    i = STEPS.index(ss.step) if ss.step in STEPS else len(STEPS) - 1
     pct = int(100 * i / (len(STEPS) - 1))
     stage = {"A": "Part 1 of 2", "B": "Part 2 of 2"}.get(ss.step[0], "Getting started" if i < 3 else "Finished")
     st.markdown(
@@ -157,7 +208,8 @@ def header() -> None:
         unsafe_allow_html=True,
     )
     if ss.rec["is_pilot"]:
-        st.info("Pilot mode: responses are flagged as pilot and excluded from the analysis.")
+        st.markdown('<div class="notice pilot"><b>Pilot mode.</b> Responses are flagged as pilot and excluded from the analysis.</div>',
+                    unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------- pages
@@ -169,18 +221,19 @@ def page_consent() -> None:
     if missing:
         st.warning(f"Setup incomplete: the ChatGPT summary is still a placeholder for {', '.join(missing)}.")
     card(
-        """<h3>Welcome</h3>
+        f"""<h3>Welcome</h3>
         <p>We are two graduate students at Duke University studying <b>how different ways of studying affect what people remember</b>
         from a short educational video. Thank you for helping!</p>
-        <h3 style="margin-top:14px">What you will do</h3>
+        <h3 class="section">What you will do</h3>
         <ul><li>Watch a <b>4-minute video</b>, shown in two parts.</li>
         <li>For each part you will study in a different way (you will be told how).</li>
         <li>Answer <b>6 multiple-choice questions</b> after each part.</li></ul>
-        <h3 style="margin-top:14px">Your privacy</h3>
+        <h3 class="section">Your privacy</h3>
         <ul><li>Participation is voluntary. You can stop at any time by closing this page.</li>
         <li>We do not collect your name, email or any identifying information. You get a random ID.</li>
-        <li>Anonymous responses will be used for a class project and shared publicly on GitHub.</li></ul>
-        <p class="muted" style="margin-top:12px">Researchers: Alberto Gómez &amp; Colby Robbins</p>"""
+        <li>Anonymous responses will be used for a student class project and shared publicly on GitHub.</li>
+        <li>There are no risks beyond those of everyday life, and there is no compensation.</li></ul>
+        {contact_paragraph()}"""
     )
     with st.form("consent"):
         agree = st.checkbox("I am 18 or older, I have read the information above, and I agree to take part.")
@@ -192,15 +245,20 @@ def page_consent() -> None:
 
 
 BACKGROUND_QUESTIONS = [
+    ("taken_before_or_seen_video",
+     "Have you done this study before (even partly), or already seen the TED-Ed video \"Meet the tardigrade\"?",
+     ["No", "Yes"]),
+    ("age_range", "What is your age range?", ["18-24", "25-34", "35-44", "45 or older"]),
     ("student_status", "Are you currently a student?",
      ["Yes, at Duke", "Yes, at another university", "No"]),
     ("native_english", "Is English your first language?", ["Yes", "No"]),
+    ("device", "What device are you using right now?", ["Laptop or desktop computer", "Tablet", "Phone"]),
     ("usual_note_method", "How do you usually take notes in class or meetings?",
      ["By hand on paper", "On a laptop or tablet", "I use AI summaries", "I rarely take notes"]),
     ("ai_summary_use", "How often do you use AI tools (e.g., ChatGPT) to summarize content?",
      ["Never", "Rarely", "Monthly", "Weekly", "Daily"]),
     ("prior_knowledge", "Before today, how much did you know about tardigrades (\"water bears\")?",
-     ["1 · Nothing", "2", "3", "4", "5 · A lot"]),
+     ["1 - Nothing", "2", "3", "4", "5 - A lot"]),
     ("attention_check", "To show you are reading carefully, please select \"Often\" below.",
      ["Never", "Rarely", "Sometimes", "Often", "Always"]),
 ]
@@ -208,7 +266,7 @@ BACKGROUND_QUESTIONS = [
 
 def page_background() -> None:
     with st.form("background"):
-        st.markdown("#### A few questions about you")
+        st.markdown('<div class="form-title">A few questions about you</div>', unsafe_allow_html=True)
         values = {}
         for i, (key, label, options) in enumerate(BACKGROUND_QUESTIONS):
             if i:
@@ -219,8 +277,8 @@ def page_background() -> None:
                 st.error("Please answer every question.")
             else:
                 for k, v in values.items():
-                    ss.rec[k] = v.split(" ·")[0] if k == "prior_knowledge" else v
-                go("setup")
+                    ss.rec[k] = v.split(" -")[0] if k == "prior_knowledge" else v
+                go("ineligible" if values["taken_before_or_seen_video"] == "Yes" else "setup")
                 st.rerun()
 
 
@@ -228,21 +286,23 @@ def page_setup() -> None:
     card(
         """<h3>Before you start</h3>
         <ul><li>Have a <b>pen and a sheet of paper</b> ready.</li>
-        <li>Turn your <b>sound on</b> (headphones are best). English captions are available in the player.</li>
+        <li>Turn your <b>sound on</b> (headphones are best). English captions are on by default (you can turn them off with the CC button).</li>
         <li>Find a quiet place and give the study your full attention for about 10 minutes.</li>
+        <li>Watch each part <b>once, straight through</b>: please do not pause, rewind or rewatch it.</li>
         <li>Do not look anything up while you work.</li>
         <li>Please <b>do not refresh</b> this page, or you will have to start over.</li></ul>"""
     )
     if st.button("Begin the study", type="primary", width="stretch"):
         try:
-            seq = choose_sequence(store().completed_sequences())
-        except Exception as exc:  # storage unreachable: do not start a session we cannot save
-            st.error(f"We could not connect to the study database. Please try again in a minute. ({exc})")
+            seq = choose_sequence(store().started_sequences())
+            ss.rec["sequence"] = seq
+            ss.rec["p1_method"] = SEQUENCES[seq]["A"]
+            ss.rec["p2_method"] = SEQUENCES[seq]["B"]
+            ss.rec["started_at"] = now_iso()
+            store().log_allocation(ss.rec)  # logged before Part 1: balances starts, tracks drop-outs
+        except Exception:  # storage unreachable: do not start a session we cannot save
+            st.error("We could not connect to the study database. Please try again in a minute.")
             return
-        ss.rec["sequence"] = seq
-        ss.rec["p1_method"] = SEQUENCES[seq]["A"]
-        ss.rec["p2_method"] = SEQUENCES[seq]["B"]
-        ss.rec["started_at"] = now_iso()
         go("A_watch")
         st.rerun()
 
@@ -260,7 +320,7 @@ def video_embed(part: str) -> None:
     else:
         components.html(html, height=405)
     st.markdown(
-        f'<div class="video-meta">"{M["video"]["title"]}", {M["video"]["author"]} · '
+        f'<div class="video-meta">"{M["video"]["title"]}", {M["video"]["author"]} - '
         f'{p["label"]}: {fmt(p["start"])}–{fmt(p["end"])}</div>',
         unsafe_allow_html=True,
     )
@@ -270,12 +330,12 @@ def page_watch(part: str) -> None:
     method = method_of(part)
     label = M["parts"][part]["label"]
     if method == "handwritten":
-        card(f"""<span class="pill">✍️ {label} · Handwritten notes</span>
+        card(f"""<span class="chip"><span class="dot"></span>{label} - Handwritten notes</span>
             <h3>Take notes by hand while you watch</h3>
             <p>Press play and write down, on paper, whatever you think will help you answer questions later.
             You will have time to review your notes afterwards.</p>""")
     else:
-        card(f"""<span class="pill ai">🤖 {label} · AI summary</span>
+        card(f"""<span class="chip"><span class="dot ai"></span>{label} - AI summary</span>
             <h3>Just watch: do not take any notes</h3>
             <p>Press play and pay attention. Put your pen down for this part.
             After the video you will read a summary of it written by ChatGPT.</p>""")
@@ -286,8 +346,8 @@ def page_watch(part: str) -> None:
     def gate():
         remaining = duration + 2 - elapsed()
         if remaining > 0:
-            st.caption(f"The Continue button will appear when this part ends · {fmt(remaining)}")
-        elif st.button("I've finished watching · Continue", type="primary", width="stretch", key=f"watched_{part}"):
+            st.caption(f"Press play now. The Continue button will appear once this part has had time to finish - {fmt(remaining)}")
+        elif st.button("I've finished watching - Continue", type="primary", width="stretch", key=f"watched_{part}"):
             ss.rec[f"{prefix(part)}_watch_seconds"] = round(elapsed(), 1)
             go(f"{part}_review")
             st.rerun()
@@ -316,13 +376,13 @@ def page_review(part: str) -> None:
     method = method_of(part)
     label = M["parts"][part]["label"]
     if method == "handwritten":
-        card(f"""<span class="pill">✍️ {label} · Review</span>
+        card(f"""<span class="chip"><span class="dot"></span>{label} - Review your notes</span>
             <h3>Review your handwritten notes</h3>
             <p>Read through your notes now. When you feel ready, start the quiz.
             You will <b>not</b> be able to look at your notes during the quiz.</p>""")
     else:
         summary = summary_html(M["parts"][part]["ai_summary"])
-        card(f"""<span class="pill ai">🤖 {label} · Review</span>
+        card(f"""<span class="chip"><span class="dot ai"></span>{label} - Review the summary</span>
             <h3>Read the AI summary of this part</h3>
             <p class="muted">Generated by ChatGPT from the video's transcript.</p>
             <div class="summary">{summary}</div>
@@ -337,11 +397,24 @@ def page_review(part: str) -> None:
         st.caption(f"Take as long as you need, up to 2 minutes. The quiz starts automatically in {fmt(left)}.")
 
     timer()
-    st.markdown('<div class="notice">📄 <b>Please put away notes before accessing quiz.</b></div>',
-                unsafe_allow_html=True)
-    if st.button("I'm ready · Start the quiz", type="primary", width="stretch", key=f"ready_{part}"):
+    if method == "handwritten":
+        st.markdown('<div class="notice"><b>Before you start the quiz,</b> put your notes away face down.</div>',
+                    unsafe_allow_html=True)
+    if st.button("I'm ready - Start the quiz", type="primary", width="stretch", key=f"ready_{part}"):
         finish_review(part, timed_out=False)
         st.rerun()
+
+
+def honesty_items(method: str) -> list[tuple[str, str]]:
+    """Self-reported deviations; each maps to one saved field (see page_quiz)."""
+    method_items = ([("no_notes", "I did not take handwritten notes while watching")] if method == "handwritten" else
+                    [("wrote_notes", "I wrote notes while watching or reading"),
+                     ("no_summary", "I did not read the AI summary")])
+    return method_items + [
+        ("paused", "I paused, rewound, skipped ahead or changed the speed of the video"),
+        ("looked", "I looked at notes, the summary or anything else while answering"),
+        ("none", "None of these"),
+    ]
 
 
 def page_quiz(part: str) -> None:
@@ -350,15 +423,15 @@ def page_quiz(part: str) -> None:
     questions = M["questions"][part]
     p = prefix(part)
     if method == "handwritten":
-        st.markdown('<div class="notice">📄 <b>Turn your notes face down now.</b> Please answer from memory.</div>',
+        st.markdown('<div class="notice"><b>Keep your notes face down.</b> Please answer from memory.</div>',
                     unsafe_allow_html=True)
     else:
-        st.markdown('<div class="notice">🧠 The summary is no longer available. Please answer from memory.</div>',
+        st.markdown('<div class="notice"><b>The summary is no longer available.</b> Please answer from memory and keep any paper notes out of sight.</div>',
                     unsafe_allow_html=True)
 
     with st.form(f"quiz_{part}"):
-        st.markdown(f"#### {label} quiz")
-        st.caption("Choose the best answer for each question.")
+        st.markdown(f'<div class="form-title">{label} quiz</div>'
+                    '<div class="form-sub">Choose the best answer for each question.</div>', unsafe_allow_html=True)
         answers = {}
         for i, q in enumerate(questions, start=1):
             st.markdown('<div class="q-sep"></div>', unsafe_allow_html=True)
@@ -371,26 +444,42 @@ def page_quiz(part: str) -> None:
             f"How many of these {len(questions)} questions do you think you answered correctly?",
             list(range(len(questions) + 1)), index=None, horizontal=True, key=f"{part}_pred",
         )
-        compliance_q = ("While watching this part, did you take handwritten notes?" if method == "handwritten"
-                        else "Did you read the AI summary before starting this quiz?")
-        compliance = st.radio(compliance_q, ["Yes", "Partly", "No"], index=None, horizontal=True, key=f"{part}_comp")
-        used = st.radio(
-            "Did you look at your notes, the summary, or anything else while answering? (Please be honest; it does not affect anything.)",
-            ["No", "Yes"], index=None, horizontal=True, key=f"{part}_used",
-        )
+        st.markdown('<div class="q-label">Quick honesty check: did any of these happen during this part?</div>'
+                    '<div class="form-sub">Please be honest. It does not affect anything.</div>', unsafe_allow_html=True)
+        checks = {k: st.checkbox(text, key=f"{part}_chk_{k}") for k, text in honesty_items(method)}
         if st.form_submit_button(f"Submit {label} answers", type="primary", width="stretch"):
-            if any(v is None for v in [*answers.values(), predicted, compliance, used]):
+            issues = [k for k, v in checks.items() if v and k != "none"]
+            if any(v is None for v in [*answers.values(), predicted]):
                 st.error("Please answer every question before submitting.")
                 return
+            if not issues and not checks["none"]:
+                st.error("Please tick at least one box in the honesty check (or \"None of these\").")
+                return
+            if issues and checks["none"]:
+                st.error("\"None of these\" cannot be combined with other boxes.")
+                return
+            compliance = "No" if ("no_notes" in issues or "no_summary" in issues) else "Yes"
+            wrote_notes = ("Yes" if "wrote_notes" in issues else "No") if method == "ai" else "n/a"
+            paused = "Yes" if "paused" in issues else "No"
+            used = "Yes" if "looked" in issues else "No"
             ss.rec[f"{p}_quiz_seconds"] = round(elapsed(), 1)
             for i, q in enumerate(questions, start=1):
                 ss.rec[f"{p}_q{i:02d}"] = answers[q["id"]]
             ss.rec[f"{p}_predicted_correct"] = predicted
             ss.rec[f"{p}_compliance"] = compliance
+            ss.rec[f"{p}_ai_part_wrote_notes"] = wrote_notes
+            ss.rec[f"{p}_paused_or_rewound"] = paused
             ss.rec[f"{p}_used_material_during_quiz"] = used
             ss.scores[part] = score_part(answers, questions)
             go("B_watch" if part == "A" else "done")
             st.rerun()
+
+
+def page_ineligible() -> None:
+    card("""<h3>Thank you for your interest!</h3>
+        <p>To keep the results valid, each person can take part only once and the video has to be new to them,
+        so we cannot include you this time.
+        We really appreciate your help.</p>""")
 
 
 def save_once() -> None:
@@ -407,7 +496,7 @@ def save_once() -> None:
 def page_done() -> None:
     save_once()
     if ss.save_error:
-        st.error("We could not save your responses yet. Please press the button below to try again.")
+        st.error("We could not save your responses yet. Please press the button below to try again. Do not close this page.")
         if st.button("Try saving again", type="primary"):
             st.rerun()
         return
@@ -416,8 +505,8 @@ def page_done() -> None:
         f"""<h3>Thank you! Your responses have been recorded.</h3>
         <p>Here is how you did:</p>
         <div class="score">
-          <div><b>{a}/6</b><span>Part 1 · {METHOD_LABEL[method_of('A')]}</span></div>
-          <div><b>{b}/6</b><span>Part 2 · {METHOD_LABEL[method_of('B')]}</span></div>
+          <div><b>{a}/6</b><span>Part 1 - {METHOD_LABEL[method_of('A')]}</span></div>
+          <div><b>{b}/6</b><span>Part 2 - {METHOD_LABEL[method_of('B')]}</span></div>
         </div>"""
     )
     card(
@@ -426,8 +515,8 @@ def page_done() -> None:
         versus <b>reading an AI-generated (ChatGPT) summary</b>. Everyone tries both methods, one per half of the
         video, in an order assigned at random so that neither half of the video favors one method.</p>
         <p><b>Please do not share the questions</b> with anyone who might still take part. Thank you!</p>
-        <p class="muted">Your anonymous ID: <b>{ss.rec['participant_id']}</b>. If you want your responses removed,
-        contact Alberto Gómez or Colby Robbins and mention this ID.</p>"""
+        <p class="muted">Your anonymous ID: <b>{ss.rec['participant_id']}</b>. Please write it down if you might want
+        your responses removed later: contact Alberto Gómez or Colby Robbins{contact_line()} and mention this ID.</p>"""
     )
 
 
@@ -465,7 +554,9 @@ elif step.endswith("_review"):
     page_review(step[0])
 elif step.endswith("_quiz"):
     page_quiz(step[0])
+elif step == "ineligible":
+    page_ineligible()
 else:
     page_done()
-st.markdown('<div class="foot">Anonymous research study</div>',
+st.markdown('<div class="foot">AIPI 510 - Project 2 - Responses are anonymous</div>',
             unsafe_allow_html=True)

@@ -5,9 +5,11 @@ Design (see docs/protocol.md):
     Each participant uses one note-taking method per half; the method order is counterbalanced:
         sequence 1: Part 1 handwritten, Part 2 AI summary
         sequence 2: Part 1 AI summary,  Part 2 handwritten
-    New participants are allocated to whichever sequence has fewer *completed* (non-pilot)
-    participants, with random tie-breaking, so the two sequences stay balanced in the
-    final sample even when some people quit halfway.
+    New participants are allocated with Efron's biased coin (Efron, 1971), counting every
+    (non-pilot) participant who has *started* (each start is logged before Part 1): if one
+    sequence has fewer starts, it is chosen with probability 2/3; if they are tied, 1/2. This keeps the final sample close to balanced even when
+    some people quit halfway, while staying random, so that many participants starting at the
+    same moment (e.g. a class session) are not all pushed into the same sequence.
 """
 from __future__ import annotations
 
@@ -19,7 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MATERIALS_PATH = ROOT / "materials" / "study_materials.json"
 
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
 PARTS = ("A", "B")
 METHODS = ("handwritten", "ai")
 SEQUENCES = {
@@ -27,11 +29,15 @@ SEQUENCES = {
     2: {"A": "ai", "B": "handwritten"},
 }
 REVIEW_MAX_SECONDS = 120
+EFRON_P = 2 / 3
 PLACEHOLDER_PREFIX = "PASTE_CHATGPT_SUMMARY"
 
 BACKGROUND_FIELDS = [
+    "taken_before_or_seen_video",
+    "age_range",
     "student_status",
     "native_english",
+    "device",
     "usual_note_method",
     "ai_summary_use",
     "prior_knowledge",
@@ -45,9 +51,12 @@ def part_fields(part: str, n_questions: int = 6) -> list[str]:
     return (
         [f"{p}_method", f"{p}_watch_seconds", f"{p}_review_seconds", f"{p}_review_timed_out", f"{p}_quiz_seconds"]
         + [f"{p}_q{i:02d}" for i in range(1, n_questions + 1)]
-        + [f"{p}_predicted_correct", f"{p}_compliance", f"{p}_used_material_during_quiz"]
+        + [f"{p}_predicted_correct", f"{p}_compliance", f"{p}_ai_part_wrote_notes",
+           f"{p}_paused_or_rewound", f"{p}_used_material_during_quiz"]
     )
 
+
+ALLOCATION_FIELDS = ["participant_id", "is_pilot", "app_version", "sequence", "started_at"]
 
 FIELDNAMES = (
     ["participant_id", "is_pilot", "app_version", "sequence", "started_at", "completed_at"]
@@ -76,15 +85,18 @@ def make_participant_id() -> str:
     return "P-" + uuid.uuid4().hex[:8].upper()
 
 
-def choose_sequence(completed_sequences: list[int], rng: random.Random | None = None) -> int:
-    """Pick the sequence with the fewest completed participants (ties broken at random)."""
+def choose_sequence(started_sequences: list[int], rng: random.Random | None = None) -> int:
+    """Efron's biased coin: favor the sequence with fewer started participants (p = 2/3)."""
     rng = rng or random.Random()
     counts = {s: 0 for s in SEQUENCES}
-    for s in completed_sequences:
+    for s in started_sequences:
         if s in counts:
             counts[s] += 1
-    fewest = min(counts.values())
-    return rng.choice(sorted(s for s, c in counts.items() if c == fewest))
+    (s1, c1), (s2, c2) = sorted(counts.items())
+    if c1 == c2:
+        return rng.choice([s1, s2])
+    behind, ahead = (s1, s2) if c1 < c2 else (s2, s1)
+    return behind if rng.random() < EFRON_P else ahead
 
 
 def score_part(answers: dict[str, str | None], questions: list[dict]) -> int:
