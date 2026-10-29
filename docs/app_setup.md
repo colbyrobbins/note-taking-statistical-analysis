@@ -102,7 +102,7 @@ written *before* Part 1: `participant_id`, `is_pilot`, `app_version`, `sequence`
 | `prior_knowledge` (1–5) | Exclusion rule (≥ 4) |
 | `attention_check` | Must equal `Often` |
 | `p1_*` / `p2_*` `method` | Method used for that half |
-| `p1_*` / `p2_*` `watch_seconds`, `review_seconds`, `review_timed_out`, `quiz_seconds` | Timing; review is self-paced with a 120 s cap |
+| `p1_*` / `p2_*` `watch_seconds`, `review_seconds`, `review_timed_out`, `quiz_seconds` | Timing; review is self-paced with no time limit |
 | `p1_q01`…`p1_q06`, `p2_q01`…`p2_q06` | Chosen option (A–D); scored later against `answer_key.csv` |
 | `p1_*` / `p2_*` `predicted_correct` (0–6) | Self-predicted score (confidence gap) |
 | `p1_*` / `p2_*` `compliance` | Followed the method (Yes / No): "No" if they ticked "did not take handwritten notes" or "did not read the AI summary" |

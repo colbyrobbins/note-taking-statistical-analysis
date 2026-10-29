@@ -5,7 +5,7 @@ Pilot mode:       add ?pilot=1 to the URL (rows are flagged and excluded from an
 
 Flow per participant (about 10 minutes):
     consent -> background -> setup
-    -> Part 1: watch (method A) -> self-paced review (max 2 min, timed) -> quiz
+    -> Part 1: watch (method A) -> self-paced review -> quiz
     -> Part 2: watch (method B) -> self-paced review -> quiz
     -> save -> debrief and score
 """
@@ -19,7 +19,7 @@ import streamlit.components.v1 as components
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from logic import (  # noqa: E402
-    APP_VERSION, ATTENTION_CORRECT, PARTS, REVIEW_MAX_SECONDS, SEQUENCES,
+    APP_VERSION, ATTENTION_CORRECT, PARTS, SEQUENCES,
     choose_sequence, empty_record, load_materials, make_participant_id, score_part, summaries_missing,
 )
 from storage import get_store  # noqa: E402
@@ -288,7 +288,7 @@ def page_setup() -> None:
         <ul><li>Have a <b>pen and a sheet of paper</b> ready.</li>
         <li>Turn your <b>sound on</b> (headphones are best). English captions are on by default (you can turn them off with the CC button).</li>
         <li>Find a quiet place and give the study your full attention for about 10 minutes.</li>
-        <li>Watch each part <b>once, straight through</b>: please do not pause, rewind or rewatch it.</li>
+        <li>Watch each part <b>once</b>.</li>
         <li>Do not look anything up while you work.</li>
         <li>Please <b>do not refresh</b> this page, or you will have to start over.</li></ul>"""
     )
@@ -340,19 +340,10 @@ def page_watch(part: str) -> None:
             <p>Press play and pay attention. Put your pen down for this part.
             After the video you will read a summary of it written by ChatGPT.</p>""")
     video_embed(part)
-    duration = M["parts"][part]["end"] - M["parts"][part]["start"]
-
-    @st.fragment(run_every=1.0)
-    def gate():
-        remaining = duration + 2 - elapsed()
-        if remaining > 0:
-            st.caption(f"Press play now. The Continue button will appear once this part has had time to finish - {fmt(remaining)}")
-        elif st.button("I've finished watching - Continue", type="primary", width="stretch", key=f"watched_{part}"):
-            ss.rec[f"{prefix(part)}_watch_seconds"] = round(elapsed(), 1)
-            go(f"{part}_review")
-            st.rerun()
-
-    gate()
+    if st.button("I've finished watching - Continue", type="primary", width="stretch", key=f"watched_{part}"):
+        ss.rec[f"{prefix(part)}_watch_seconds"] = round(elapsed(), 1)
+        go(f"{part}_review")
+        st.rerun()
 
 
 def summary_html(text: str) -> str:
@@ -366,9 +357,9 @@ def summary_html(text: str) -> str:
     return "<br>".join(escape(ln) for ln in lines)
 
 
-def finish_review(part: str, timed_out: bool) -> None:
-    ss.rec[f"{prefix(part)}_review_seconds"] = REVIEW_MAX_SECONDS if timed_out else round(elapsed(), 1)
-    ss.rec[f"{prefix(part)}_review_timed_out"] = timed_out
+def finish_review(part: str) -> None:
+    ss.rec[f"{prefix(part)}_review_seconds"] = round(elapsed(), 1)
+    ss.rec[f"{prefix(part)}_review_timed_out"] = False  # no time limit on review; column kept for the data schema
     go(f"{part}_quiz")
 
 
@@ -388,20 +379,14 @@ def page_review(part: str) -> None:
             <div class="summary">{summary}</div>
             <p style="margin-top:12px">When you feel ready, start the quiz. The summary will <b>not</b> be available during the quiz.</p>""")
 
-    @st.fragment(run_every=1.0)
-    def timer():
-        left = REVIEW_MAX_SECONDS - elapsed()
-        if left <= 0:
-            finish_review(part, timed_out=True)
-            st.rerun()
-        st.caption(f"Take as long as you need, up to 2 minutes. The quiz starts automatically in {fmt(left)}.")
-
-    timer()
     if method == "handwritten":
         st.markdown('<div class="notice"><b>Before you start the quiz,</b> put your notes away face down.</div>',
                     unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="notice"><b>The AI Summary will not be accessible during the quiz.</b></div>',
+                    unsafe_allow_html=True)
     if st.button("I'm ready - Start the quiz", type="primary", width="stretch", key=f"ready_{part}"):
-        finish_review(part, timed_out=False)
+        finish_review(part)
         st.rerun()
 
 

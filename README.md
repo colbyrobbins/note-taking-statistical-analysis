@@ -17,8 +17,8 @@ study method, and the order of methods is counterbalanced across two sequences:
 | 1 | Handwritten notes | ChatGPT summary |
 | 2 | ChatGPT summary | Handwritten notes |
 
-- **Handwritten:** the participant takes notes on paper while watching, reviews them (self-paced, max 2 minutes), then puts them away and takes the quiz.
-- **AI summary:** the participant only watches, then reads a standardized ChatGPT summary of that part (same cap, same screen), which disappears when the quiz starts. The summaries were generated once and are shown unchanged to everyone (see [`materials/ai_prompt.md`](materials/ai_prompt.md)).
+- **Handwritten:** the participant takes notes on paper while watching, reviews them (self-paced, no time limit), then puts them away and takes the quiz.
+- **AI summary:** the participant only watches, then reads a standardized ChatGPT summary of that part (self-paced, no time limit), which disappears when the quiz starts. The summaries were generated once and are shown unchanged to everyone (see [`materials/ai_prompt.md`](materials/ai_prompt.md)).
 - **Quiz:** 6 multiple-choice questions per part (3 factual, 3 conceptual), taken right after that part.
 - **Why this design:** every participant tries both methods, so each person serves as their own control. Because each half is used with both methods, any difference in difficulty between the halves cancels out across sequences.
 - **Allocation:** Efron's biased coin. Every start is logged (Google Sheet `allocations` tab) before Part 1; the sequence with fewer started (non-pilot) participants is assigned with probability 2/3 (1/2 when tied). This keeps the sample close to balanced while staying random even when many people start at once, and lets us report drop-out by sequence.
@@ -33,7 +33,7 @@ study method, and the order of methods is counterbalanced across two sequences:
 | **Primary outcome** | Quiz score (% correct) for each part, compared by method. |
 | **Secondary (exploratory)** | Factual vs. conceptual subscores; robustness on items fully covered by the AI summary (`summary_coverage`); self-predicted score vs. actual; sequence × method (carryover); review time, device and note-taking/AI habits as covariates or moderators. |
 | **Sample size** | Target 24-30 participants. Planned power calculation: 80% power to detect d_z = 0.6 needs 24 complete pairs. |
-| **Exclusions** | Prior knowledge of tardigrades >= 4 (of 5); failed attention check; did not follow a method (no handwritten notes, did not read the summary, or wrote notes in the AI part); looked at notes/summary during a quiz. Paused/rewound is reported and checked in a sensitivity analysis. People who did the study before or had already seen the video are stopped by the app; pilot rows are excluded automatically. |
+| **Exclusions** | Prior knowledge of tardigrades >= 4 (of 5); failed attention check; did not follow a method (no handwritten notes, did not read the summary, or wrote notes in the AI part); looked at notes/summary during a quiz. People who did the study before or had already seen the video are stopped by the app; pilot rows are excluded automatically. |
 
 ## Known limitations (to discuss in the report)
 
@@ -42,7 +42,7 @@ study method, and the order of methods is counterbalanced across two sequences:
 - The AI summary covers 6 of 12 quiz answers fully, 4 partially and 2 not at all (`summary_coverage`); a robustness analysis uses only fully covered items.
 - "Conceptual" items still ask about content stated in the video; the factual/conceptual split is exploratory.
 - Six items per part give coarse scores; item-level models use all 12 answers per person.
-- Online, unsupervised sessions: compliance, pausing/rewinding and use of materials are self-reported.
+- Online, unsupervised sessions: compliance and use of materials are self-reported.
 
 ## Project status
 

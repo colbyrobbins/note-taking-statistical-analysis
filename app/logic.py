@@ -28,7 +28,6 @@ SEQUENCES = {
     1: {"A": "handwritten", "B": "ai"},
     2: {"A": "ai", "B": "handwritten"},
 }
-REVIEW_MAX_SECONDS = 120
 EFRON_P = 2 / 3
 PLACEHOLDER_PREFIX = "PASTE_CHATGPT_SUMMARY"
 
