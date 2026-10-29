@@ -11,6 +11,7 @@ Flow per participant (about 10 minutes):
 """
 import sys
 import time
+import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -300,8 +301,11 @@ def page_setup() -> None:
             ss.rec["p2_method"] = SEQUENCES[seq]["B"]
             ss.rec["started_at"] = now_iso()
             store().log_allocation(ss.rec)  # logged before Part 1: balances starts, tracks drop-outs
-        except Exception:  # storage unreachable: do not start a session we cannot save
+        except Exception as exc:  # storage unreachable: do not start a session we cannot save
+            traceback.print_exc()  # full traceback goes to the server logs (Manage app -> Logs)
             st.error("We could not connect to the study database. Please try again in a minute.")
+            if ss.rec["is_pilot"]:  # details only in pilot mode (?pilot=1), never shown to participants
+                st.code(f"{type(exc).__name__}: {exc}")
             return
         go("A_watch")
         st.rerun()
