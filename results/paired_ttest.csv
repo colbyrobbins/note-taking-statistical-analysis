@@ -1,0 +1,2 @@
+n_complete,n_excluded,n_pairs,mean_handwritten,mean_ai,mean_diff,sd_diff,ci95_low,ci95_high,t,df,p_t,cohens_dz,shapiro_p,n_outliers_z3,wilcoxon_stat,wilcoxon_p,rank_biserial_r,decision_test
+13,5,8,93.75,81.25,12.5,27.81743201320934,-10.755955149055108,35.75595514905511,1.2709778186044849,7,0.24434095200770986,0.4493585171364585,0.8006263515466563,0,7.0,0.328125,0.5,paired_t

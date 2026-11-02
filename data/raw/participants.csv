@@ -1,0 +1,14 @@
+participant_id,sequence,started_at,completed_at,taken_before_or_seen_video,age_range,student_status,native_english,device,usual_note_method,ai_summary_use,prior_knowledge,attention_check
+P-991E263D,2,2026-10-28T22:56:29+00:00,2026-10-28T23:05:13+00:00,No,18-24,"Yes, at Duke",Yes,Laptop or desktop computer,By hand on paper,Monthly,2,Often
+P-82BB643C,1,2026-10-29T21:32:12+00:00,2026-10-29T21:36:57+00:00,No,45 or older,No,Yes,Phone,By hand on paper,Daily,1,Often
+P-38B2790A,1,2026-10-29T23:48:52+00:00,2026-10-29T23:58:49+00:00,No,18-24,No,Yes,Phone,I rarely take notes,Weekly,1,Often
+P-03EEA118,2,2026-10-29T23:56:16+00:00,2026-10-30T00:00:59+00:00,No,18-24,"Yes, at another university",Yes,Phone,I rarely take notes,Weekly,3,Often
+P-AFA89C98,1,2026-10-30T03:48:39+00:00,2026-10-30T03:54:40+00:00,No,18-24,"Yes, at Duke",Yes,Phone,By hand on paper,Rarely,1,Often
+P-87F39F04,2,2026-10-30T16:29:15+00:00,2026-10-30T16:31:49+00:00,No,18-24,"Yes, at another university",Yes,Phone,By hand on paper,Rarely,1,Often
+P-B3A66899,1,2026-10-30T17:09:36+00:00,2026-10-30T17:18:07+00:00,No,18-24,No,Yes,Laptop or desktop computer,By hand on paper,Rarely,2,Often
+P-B30B3946,2,2026-10-30T17:47:20+00:00,2026-10-30T17:55:35+00:00,No,18-24,"Yes, at another university",Yes,Laptop or desktop computer,On a laptop or tablet,Never,2,Often
+P-DA68BA0F,1,2026-10-30T20:59:53+00:00,2026-10-30T21:09:11+00:00,No,18-24,"Yes, at Duke",No,Laptop or desktop computer,I use AI summaries,Daily,1,Often
+P-C01D6E85,1,2026-10-31T00:09:05+00:00,2026-10-31T00:19:18+00:00,No,25-34,"Yes, at Duke",Yes,Phone,On a laptop or tablet,Weekly,1,Often
+P-21C28240,1,2026-10-31T16:54:06+00:00,2026-10-31T17:18:56+00:00,No,25-34,"Yes, at Duke",Yes,Laptop or desktop computer,On a laptop or tablet,Rarely,2,Often
+P-6E342F0B,2,2026-11-01T19:43:09+00:00,2026-11-01T19:50:42+00:00,No,18-24,"Yes, at Duke",No,Laptop or desktop computer,I rarely take notes,Weekly,1,Often
+P-A4FFC788,2,2026-11-02T00:01:14+00:00,2026-11-02T00:10:54+00:00,No,25-34,"Yes, at Duke",No,Laptop or desktop computer,On a laptop or tablet,Daily,1,Often

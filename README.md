@@ -111,6 +111,13 @@ python src/ingest_app_data.py     # -> data/raw/: quiz_responses, assignments, a
                                   #    session_process, allocations (drop-out)
 ```
 
+3. Run the primary analysis (two-tailed paired t-test, handwritten vs. AI summary):
+
+```bash
+python src/paired_ttest.py        # -> results/paired_ttest.csv
+python src/paired_ttest.py --no-exclusions   # sensitivity run -> results/paired_ttest_no_exclusions.csv
+```
+
 ## Data and privacy
 
 Participants appear only as random IDs (`P-XXXXXXXX`); no names or emails are collected.
