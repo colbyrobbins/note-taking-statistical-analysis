@@ -1,0 +1,13 @@
+video,question_id,question_type,correct_answer,summary_coverage
+A,q01,factual,C,full
+A,q02,factual,D,partial
+A,q03,factual,B,full
+A,q04,conceptual,A,partial
+A,q05,conceptual,B,partial
+A,q06,conceptual,D,none
+B,q01,factual,A,full
+B,q02,factual,C,full
+B,q03,factual,D,full
+B,q04,conceptual,B,full
+B,q05,conceptual,C,partial
+B,q06,conceptual,A,none
