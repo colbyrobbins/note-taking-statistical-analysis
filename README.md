@@ -59,7 +59,7 @@ src/                    analysis scripts, in the order they run
   clean_data.py           scoring -> clean tables in data/processed/
   paired_ttest.py         primary analysis: paired t-test, Shapiro-Wilk, Wilcoxon
   secondary_analysis.py   descriptives, post hoc tests, order check, confidence
-  make_figures.py         the four figures used in the report
+  make_figures.py         the six figures used in the report
   run_pipeline.py         runs every step above in order
 tests/                  pytest checks for the app logic and every analysis step
 data/raw/               app export (app_responses.csv) and the tables derived from it
