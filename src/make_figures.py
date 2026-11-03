@@ -1,4 +1,4 @@
-"""This script makes the five figures used in the report and the slides.
+"""This script makes the six figures used in the report and the slides.
 
 Input:  data/processed/scores_wide.csv (from src/clean_data.py)
 Output (results/figures/):
@@ -7,6 +7,7 @@ Output (results/figures/):
     3_who_did_better.png  how many people scored higher with each method
     4_question_type.png   average score by method for each type of question
     5_differences.png     distribution of the paired differences vs. a normal curve, with Shapiro-Wilk p
+    6_normality_check.png the same histogram next to a normal Q-Q plot
 
 Usage:
     python src/make_figures.py
@@ -129,12 +130,8 @@ def question_type_figure(wide: pd.DataFrame, path: Path) -> None:
     plt.close(fig)
 
 
-def difference_distribution_figure(wide: pd.DataFrame, path: Path) -> None:
+def difference_histogram(ax, d: np.ndarray) -> None:
     """Histogram of the paired differences the Shapiro-Wilk test checks, against a normal curve."""
-    d = wide["diff_score_pct"].dropna().to_numpy()
-    shapiro_p = stats.shapiro(d).pvalue
-    fig, ax = plt.subplots(figsize=(8, 4.6))
-
     # Scores move in steps of 1/6 (16.7 points), so each bar is one possible difference
     step = 100 / 6
     values, counts = np.unique(np.round(d / step).astype(int), return_counts=True)
@@ -148,17 +145,48 @@ def difference_distribution_figure(wide: pd.DataFrame, path: Path) -> None:
             label="Normal curve, same mean and SD")
     ax.axvline(0, color=INK2, lw=1)
     ax.legend(frameon=False, loc="upper right", fontsize=10)
-    verdict = "not normal" if shapiro_p < 0.05 else "no evidence against normal"
-    ax.text(0.02, 0.97, f"Shapiro-Wilk p = {shapiro_p:.3f}\n({verdict})", transform=ax.transAxes,
-            va="top", fontsize=11, color=INK)
-
     ax.set_xticks(np.arange(-3, 4) * step, [f"{x:+.0f}" if x else "0" for x in np.arange(-3, 4) * step])
     ax.set_xlim(xs.min(), xs.max())
     ax.set_ylim(0, counts.max() + 1.2)
     ax.set_xlabel("Handwritten minus AI score (points)")
     ax.set_ylabel("Number of participants")
-    ax.set_title("Are the score differences normally distributed?")
     tidy(ax)
+
+
+def difference_distribution_figure(wide: pd.DataFrame, path: Path) -> None:
+    """One-panel version for the report and slides: the histogram with the Shapiro-Wilk result."""
+    d = wide["diff_score_pct"].dropna().to_numpy()
+    shapiro_p = stats.shapiro(d).pvalue
+    fig, ax = plt.subplots(figsize=(8, 4.6))
+    difference_histogram(ax, d)
+    verdict = "not normal" if shapiro_p < 0.05 else "no evidence against normal"
+    ax.text(0.02, 0.97, f"Shapiro-Wilk p = {shapiro_p:.3f}\n({verdict})", transform=ax.transAxes,
+            va="top", fontsize=11, color=INK)
+    ax.set_title("Are the score differences normally distributed?")
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def normality_check_figure(wide: pd.DataFrame, path: Path) -> None:
+    """Two-panel version: the same histogram next to a normal Q-Q plot."""
+    d = wide["diff_score_pct"].dropna().to_numpy()
+    shapiro_p = stats.shapiro(d).pvalue
+    fig, (ax_hist, ax_qq) = plt.subplots(1, 2, figsize=(11, 4.6))
+    difference_histogram(ax_hist, d)
+    ax_hist.set_title("Score differences")
+
+    # If the differences were normal, the points would sit on the line
+    (theoretical, ordered), (slope, intercept, _) = stats.probplot(d, dist="norm")
+    ax_qq.plot(theoretical, slope * theoretical + intercept, color=INK2, lw=1.5, ls="--")
+    ax_qq.plot(theoretical, ordered, "o", ms=9, color=BLUE, mec="white", mew=2, zorder=3)
+    ax_qq.set_xlabel("Expected if normal (z)")
+    ax_qq.set_ylabel("Observed difference (points)")
+    ax_qq.set_title("Normal Q-Q plot")
+    tidy(ax_qq, grid="both")
+
+    fig.suptitle(f"Are the differences normal?  Shapiro-Wilk p = {shapiro_p:.3f}",
+                 x=0.02, ha="left", fontsize=14, fontweight="bold")
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
@@ -178,7 +206,8 @@ def main(argv=None):
     who_did_better_figure(wide, args.out_dir / "3_who_did_better.png")
     question_type_figure(wide, args.out_dir / "4_question_type.png")
     difference_distribution_figure(wide, args.out_dir / "5_differences.png")
-    print(f"5 figures -> {args.out_dir}")
+    normality_check_figure(wide, args.out_dir / "6_normality_check.png")
+    print(f"6 figures -> {args.out_dir}")
 
 
 if __name__ == "__main__":
