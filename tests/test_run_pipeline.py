@@ -23,4 +23,4 @@ def test_final_numbers_match_the_report(tmp_path):
     assert row["wilcoxon_p"] == pytest.approx(0.057, abs=0.001)
 
     make_figures.main(["--processed-dir", str(tmp_path / "processed"), "--out-dir", str(tmp_path / "figures")])
-    assert len(list((tmp_path / "figures").glob("*.png"))) == 4
+    assert len(list((tmp_path / "figures").glob("*.png"))) == 5
