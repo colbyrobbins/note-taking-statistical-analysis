@@ -1,83 +1,115 @@
-# Pen vs. ChatGPT: Does the Way You Take Notes Change What You Remember?
+# Handwritten Notes vs. AI Summaries
 
-Module Project 2 (Statistical Analysis). A within-subject experiment comparing
-**handwritten notes** with **AI-generated (ChatGPT) notes**, scored on a quiz
-**48 hours** after watching a short educational video. It extends the well-known
-pen-vs-laptop note-taking studies with an AI condition.
+Module Project 2 (Statistical Analysis), AIPI 510, Duke University. Alberto Gomez Soteres and Colby Robbins.
 
-## Research question and hypotheses
+Do people remember more from a short video when they take their own handwritten notes than when
+they read a ChatGPT summary? We ran a within-subjects experiment to find out.
+
+**Live study app:** https://note-taking-statistical-analysis.streamlit.app/
+
+## Result in one paragraph
+
+16 participants completed the study. They scored **89.6%** with handwritten notes and **75.0%**
+with the AI summary, a difference of **+14.6 points** (95% CI [0.5, 28.7], d_z = 0.55). The paired
+t-test was significant (t(15) = 2.21, p = .043); the Wilcoxon signed-rank test was not
+(p = .057), and Shapiro-Wilk showed the differences were not normal (p = .012). Most of the gap
+came from conceptual questions (+25.0 points, p = .029, Holm p = .086). We read this as early
+evidence in favor of handwritten notes, not a final answer.
+
+## Experimental design
+
+Every participant watched the same TED-Ed video, "Meet the tardigrade, the toughest animal on Earth",
+split into Part 1 (0:00-2:17) and Part 2 (2:17-3:55). Each part used a different study method:
+
+| Sequence | Part 1 | Part 2 |
+|---|---|---|
+| 1 | Handwritten notes | ChatGPT summary |
+| 2 | ChatGPT summary | Handwritten notes |
+
+- **Handwritten:** take notes on paper while watching, review them, put them away, take the quiz.
+- **AI summary:** only watch, then read a fixed ChatGPT summary of that part, then take the quiz
+  (prompt and outputs in [`materials/ai_prompt.md`](materials/ai_prompt.md)).
+- **Quiz:** 6 multiple-choice questions per part (3 factual, 3 conceptual).
+- **Counterbalancing:** each part is studied with both methods across the sample, so differences in
+  difficulty between parts cancel out.
+- **Randomization:** Efron's biased coin assigns each new participant to a sequence (8 ended up in each).
+
+## Hypotheses and analysis
 
 | | |
 |---|---|
-| **H0** | Mean 48-hour quiz score is the same for handwritten and AI notes (mu_AI = mu_hand, i.e. mean paired difference = 0). |
-| **H1** | The means differ (mu_AI != mu_hand). |
-| **Test** | Two-tailed paired t-test, alpha = 0.05. Two-tailed because AI notes could help *or* hurt. |
-| **Primary outcome** | 48-hour delayed quiz score (% correct). |
-| **Secondary (exploratory)** | Immediate quiz score; factual vs. conceptual subscores. |
-| **Power** | 80% to detect d_z = 0.6, which needs 24 complete pairs. Recruit ~29 for 15% dropout. |
+| **H0** | Mean quiz score is the same with handwritten notes and with the AI summary |
+| **H1** | The means differ (two-tailed, alpha = 0.05) |
+| **Power analysis** | 24 participants for 80% power to detect d_z = 0.6 (`src/power_analysis.py`); with the 16 collected, power is 0.61 |
+| **Primary test** | Paired t-test on each person's handwritten minus AI score, with a Shapiro-Wilk check and the Wilcoxon signed-rank test |
+| **Secondary** | Post hoc tests by question type (Holm-corrected), order check, predicted vs. actual score |
 
-Full design details are in [`docs/protocol.md`](docs/protocol.md).
+Full plan: [`docs/analysis_plan.md`](docs/analysis_plan.md).
 
 ## Repository layout
 
 ```
-src/                 all analysis code (scripts, not notebooks)
-  config.py            study constants: alpha, power, sequences, paths
-  power_analysis.py    a-priori power / sample-size calculation
-  assign_conditions.py counterbalanced participant schedule
-  simulate_data.py     fake data in the raw format, for testing only
-  clean_data.py        score Google Forms exports -> tidy CSVs
-  analyze.py           paired t-test, CI, effect sizes, assumption checks
-  plots.py             report figures
-tests/               pytest checks that run the pipeline on simulated data
-data/raw/            Google Forms exports, answer key, assignments (see docs/data_dictionary.md)
-data/processed/      cleaned, scored CSVs
-results/             tables and figures written by the scripts
-docs/                protocol, data dictionary, report outline
-materials/           video list and quiz items
+app/                    Streamlit study app (data collection)
+  streamlit_app.py        participant-facing pages
+  logic.py                sequences, allocation, scoring; no Streamlit imports
+  storage.py              saves responses to a Google Sheet (local CSV when run locally)
+src/                    analysis scripts, in the order they run
+  power_analysis.py       a priori power analysis and power tables
+  ingest_app_data.py      Google Sheet export -> raw analysis tables in data/raw/
+  clean_data.py           scoring -> clean tables in data/processed/
+  paired_ttest.py         primary analysis: paired t-test, Shapiro-Wilk, Wilcoxon
+  secondary_analysis.py   descriptives, post hoc tests, order check, confidence
+  make_figures.py         the six figures used in the report
+  run_pipeline.py         runs every step above in order
+tests/                  pytest checks for the app logic and every analysis step
+data/raw/               app export (app_responses.csv) and the tables derived from it
+data/processed/         scored, clean data (one row per question, per part and per participant)
+results/                tables and figures written by the scripts
+docs/                   analysis plan and app setup guide (with a field-by-field data dictionary)
+materials/              video details, quiz questions and answer key, ChatGPT prompt and summaries
 ```
 
 ## Reproducing the analysis
 
 Requires Python 3.10+.
 
-```powershell
-# Windows PowerShell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
+```bash
+python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-```
-```bash
-# macOS / Linux
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+python src/run_pipeline.py      # every number and figure in the report
+pytest                          # 24 tests
 ```
 
-Then run the pipeline in order:
+Or step by step:
 
 ```bash
-python src/power_analysis.py      # sample size -> results/tables/power_analysis.csv
-python src/assign_conditions.py --n 30   # -> data/raw/assignments.csv
-# ... run sessions, export Google Forms to data/raw/ (see docs/data_dictionary.md) ...
-python src/clean_data.py          # -> data/processed/scores_*.csv, results/tables/exclusions.csv
-python src/analyze.py             # -> results/tables/primary_results.csv, assumption_checks.csv
-python src/plots.py               # -> results/figures/*.png
+python src/power_analysis.py                       # -> results/power_*.csv
+python src/ingest_app_data.py                      # -> data/raw/ analysis tables
+python src/clean_data.py                           # -> data/processed/
+python src/paired_ttest.py                         # -> results/paired_ttest.csv
+python src/secondary_analysis.py                   # -> results/descriptives.csv, secondary_tests.csv
+python src/make_figures.py                         # -> results/figures/
 ```
 
-To check the pipeline before real data exists, use simulated data (never report it as a finding):
+## Data
+
+- `data/raw/app_responses.csv`: one row per participant who completed the study (16), exported
+  from the Google Sheet with the columns used in the analysis: sequence, background answers,
+  method, quiz answers and predicted score for each part.
+- `data/raw/*.csv` (other files): the same data reshaped by `src/ingest_app_data.py`, plus the answer key.
+- `data/processed/`: scored data built by `src/clean_data.py`; never edited by hand.
+
+Participants appear only as random IDs (`P-XXXXXXXX`); no names, emails or IP addresses were collected.
+
+## Running the app
 
 ```bash
-python src/simulate_data.py --out-dir data/simulated
-python src/clean_data.py --raw-dir data/simulated --out-dir data/simulated/processed --results-dir data/simulated/results
-python src/analyze.py --data-dir data/simulated/processed --results-dir data/simulated/results
-pytest
+streamlit run app/streamlit_app.py     # http://localhost:8501 (add ?pilot=1 for pilot mode)
 ```
 
-## Data and privacy
-
-Participants appear only as pseudonymous IDs (`P001`, ...). Any file linking IDs
-to real names or emails must stay outside the repo (`data/private/` is git-ignored).
+Locally, responses are saved to `data/app_responses/` (git-ignored). The deployed app saves to a
+Google Sheet; see [`docs/app_setup.md`](docs/app_setup.md) for the setup and what each saved field means.
 
 ## Contributing
 
-Work happens on branches and pull requests; see [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Work happens on branches and pull requests into `dev`; see [`CONTRIBUTING.md`](CONTRIBUTING.md).

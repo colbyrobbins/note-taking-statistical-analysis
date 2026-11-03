@@ -1,0 +1,189 @@
+{
+  "study_title": "Note-Taking & Learning Study",
+  "video": {
+    "title": "Meet the tardigrade, the toughest animal on Earth",
+    "author": "Thomas Boothby (TED-Ed)",
+    "youtube_id": "IxndOd3kmSs",
+    "source_url": "https://www.youtube.com/watch?v=IxndOd3kmSs",
+    "total_seconds": 235
+  },
+  "parts": {
+    "A": {
+      "label": "Part 1",
+      "start": 0,
+      "end": 137,
+      "topic": "How tardigrades survive without water",
+      "ai_summary": "* Humans can survive only about 100 hours without water, but tardigrades can survive decades without it.\n* Tardigrades, also called water bears, are about 1 millimeter long and have eight legs.\n* Water is essential for metabolism, which involves biochemical reactions inside cells.\n* Tardigrades survive dehydration through anhydrobiosis, meaning “life without water.”\n* During dehydration, they enter a tun state, curling into a ball and folding their head and legs inward.\n* Special molecules form a protective matrix around DNA, proteins, and cell membranes, preventing damage.\n* When water returns, the matrix dissolves, leaving the cells functional again.\n* Tardigrades also tolerate freezing, extreme heat, high radiation, and the vacuum of space."
+    },
+    "B": {
+      "label": "Part 2",
+      "start": 137,
+      "end": 235,
+      "topic": "Where tardigrades live and why scientists study them",
+      "ai_summary": "* Earthly origin: Tardigrades are not aliens. Scientific evidence shows they evolved on Earth.\n* Species: More than 1,100 species are known, and many more may remain undiscovered.\n* Worldwide distribution: Tardigrades live on every continent, including Antarctica.\n* Habitats: They survive in deserts, polar ice, oceans, freshwater, rainforests, and high mountains.\n* Finding them: They can be found in moss and lichens in parks, yards, and forests using a microscope.\n* Survival research: Scientists study whether their protective tun state helps them survive other stressful conditions.\n* Practical applications: Research may help preserve vaccines and develop stress-resistant crops.\n* Space research: Their survival in space's vacuum may reveal life's limits and ways to protect astronauts."
+    }
+  },
+  "questions": {
+    "A": [
+      {
+        "id": "q01",
+        "type": "factual",
+        "text": "According to the video, a human can survive about ___ without water, while a tardigrade can last ___.",
+        "options": {
+          "A": "3 days / several years",
+          "B": "100 hours / several months",
+          "C": "100 hours / decades",
+          "D": "10 days / decades"
+        },
+        "answer": "C",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q02",
+        "type": "factual",
+        "text": "In the tun state, what does a tardigrade tuck inside its body?",
+        "options": {
+          "A": "Only its eight legs",
+          "B": "Its head and four front legs",
+          "C": "Its four back legs",
+          "D": "Its head and all eight legs"
+        },
+        "answer": "D",
+        "summary_coverage": "partial"
+      },
+      {
+        "id": "q03",
+        "type": "factual",
+        "text": "Which cell components get trapped in the protective matrix?",
+        "options": {
+          "A": "DNA, sugars and mitochondria",
+          "B": "DNA, proteins and membranes",
+          "C": "Proteins, fats and ribosomes",
+          "D": "Enzymes, membranes and fats"
+        },
+        "answer": "B",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q04",
+        "type": "conceptual",
+        "text": "According to the video, how do tardigrades survive without water when most organisms cannot?",
+        "options": {
+          "A": "They replace the lost water with a matrix of special molecules",
+          "B": "They store enough water in their bodies to last for decades",
+          "C": "They pull moisture out of the air through their eight legs",
+          "D": "They switch to a metabolism that does not need any water"
+        },
+        "answer": "A",
+        "summary_coverage": "partial"
+      },
+      {
+        "id": "q05",
+        "type": "conceptual",
+        "text": "Imagine dried-out cells that cannot make the tardigrade's special molecules. Based on the video, what would most likely happen to their DNA and proteins?",
+        "options": {
+          "A": "They would stay safely locked in place",
+          "B": "They would unfold, break apart or fuse",
+          "C": "They would be repaired once water returns",
+          "D": "They would turn into a protective matrix"
+        },
+        "answer": "B",
+        "summary_coverage": "partial"
+      },
+      {
+        "id": "q06",
+        "type": "conceptual",
+        "text": "Which statement about anhydrobiosis matches the video?",
+        "options": {
+          "A": "It was first discovered in tardigrades in Antarctica",
+          "B": "It works by storing extra water inside the cells",
+          "C": "It requires tardigrades to stay frozen until water returns",
+          "D": "Bacteria, archaea and plants can also survive drying out"
+        },
+        "answer": "D",
+        "summary_coverage": "none"
+      }
+    ],
+    "B": [
+      {
+        "id": "q01",
+        "type": "factual",
+        "text": "About how many species of tardigrades are known?",
+        "options": {
+          "A": "Over 1,100",
+          "B": "About 110",
+          "C": "About 11,000",
+          "D": "Over 110,000"
+        },
+        "answer": "A",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q02",
+        "type": "factual",
+        "text": "According to the video, where can you commonly find tardigrades near people?",
+        "options": {
+          "A": "In tap water and puddles",
+          "B": "In house dust and carpets",
+          "C": "In moss and lichens",
+          "D": "In garden soil and compost"
+        },
+        "answer": "C",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q03",
+        "type": "factual",
+        "text": "Which list matches environments mentioned in the video?",
+        "options": {
+          "A": "Deserts, caves, rainforests, volcanoes",
+          "B": "Ice sheets, caves, deep-sea vents, peaks",
+          "C": "Rainforests, volcanoes, swamps, glaciers",
+          "D": "Deserts, ice sheets, rainforests, peaks"
+        },
+        "answer": "D",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q04",
+        "type": "conceptual",
+        "text": "Why does the video reject the idea that tardigrades came from outer space?",
+        "options": {
+          "A": "No tardigrade has ever been sent into space",
+          "B": "Scientific evidence shows they evolved on Earth",
+          "C": "Space agencies tested them and found no alien traits",
+          "D": "They are far too large to travel on meteorites"
+        },
+        "answer": "B",
+        "summary_coverage": "full"
+      },
+      {
+        "id": "q05",
+        "type": "conceptual",
+        "text": "According to the video, how could tardigrade research help with vaccines?",
+        "options": {
+          "A": "By growing the vaccine viruses inside tardigrade cells",
+          "B": "By adding tardigrade proteins to every vaccine dose",
+          "C": "By applying how tardigrades stabilize sensitive molecules",
+          "D": "By testing all new vaccines on tardigrades first"
+        },
+        "answer": "C",
+        "summary_coverage": "partial"
+      },
+      {
+        "id": "q06",
+        "type": "conceptual",
+        "text": "According to the video, what big question could tardigrade research help answer?",
+        "options": {
+          "A": "Whether life could survive on far harsher planets",
+          "B": "How the very first animals evolved on Earth",
+          "C": "Whether humans could ever survive without water",
+          "D": "Why some species go extinct much faster than others"
+        },
+        "answer": "A",
+        "summary_coverage": "none"
+      }
+    ]
+  },
+  "contact_email": ""
+}
