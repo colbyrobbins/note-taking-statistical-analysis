@@ -1,18 +1,17 @@
-"""Convert the app's export (one row per participant) into the raw files the pipeline reads.
+"""This script turns the app's export into the raw tables the analysis uses.
 
-Input:  data/raw/app_responses.csv  (download the Google Sheet as CSV; never edit it by hand)
-Output (in --out-dir, default data/raw/):
-    quiz_responses.csv   participant x part: participant_id, video (A/B), timepoint, q01..q06
-    assignments.csv      participant x part: participant_id, sequence, session_order, video, method
-    answer_key.csv       video, question_id, question_type, correct_answer (from materials/)
-    participants.csv     one row per participant: background answers incl. exclusion fields
-    session_process.csv  participant x part: watch/review/quiz seconds, predicted score, compliance,
-                         notes in the AI part, pausing/rewinding, use of material during the quiz
-    allocations.csv      every non-pilot start (from the "allocations" tab, if exported to
-                         data/raw/app_allocations.csv) with completed = True/False -> drop-out by sequence
-Pilot rows (is_pilot = True) are written to data/pilot/ and excluded.
+The app saves one row per participant to a Google Sheet. We download it as CSV, keep the columns
+the analysis uses, save it as data/raw/app_responses.csv, and this script reshapes it into one row
+per participant and part.
 
-Part 1 of the video is "A" and Part 2 is "B"; Part 1 is always watched first.
+Input:  data/raw/app_responses.csv
+Output (data/raw/):
+    quiz_responses.csv   participant x part: the answer chosen for each of the 6 questions
+    assignments.csv      participant x part: sequence, order and method (handwritten or ai)
+    answer_key.csv       correct answer, question type and summary coverage for every question
+    participants.csv     one row per participant: background answers
+    session_process.csv  participant x part: the score each person predicted after the quiz
+Pilot rows (is_pilot = True) are saved to data/pilot/ and left out.
 
 Usage:
     python src/ingest_app_data.py
@@ -25,20 +24,19 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_RAW = ROOT / "data" / "raw"
-
 MATERIALS = ROOT / "materials" / "study_materials.json"
-BACKGROUND = ["taken_before_or_seen_video", "age_range", "student_status", "native_english", "device",
-              "usual_note_method", "ai_summary_use", "prior_knowledge", "attention_check"]
-PROCESS = ["method", "watch_seconds", "review_seconds", "review_timed_out", "quiz_seconds",
-           "predicted_correct", "compliance", "ai_part_wrote_notes", "paused_or_rewound",
-           "used_material_during_quiz"]
-PARTS = {"A": ("p1", 1), "B": ("p2", 2)}
+
+BACKGROUND = ["age_range", "student_status", "native_english", "device", "usual_note_method",
+              "ai_summary_use", "prior_knowledge"]
+PROCESS = ["method", "predicted_correct"]
+PARTS = {"A": ("p1", 1), "B": ("p2", 2)}  # Part 1 of the video is "A", Part 2 is "B"
 
 
 def answer_key(materials: dict) -> pd.DataFrame:
+    """One row per question, taken from the study materials."""
     rows = [
         {"video": part, "question_id": q["id"], "question_type": q["type"], "correct_answer": q["answer"],
-         # does the AI summary of this part contain the answer? (full / partial / none) -> robustness check
+         # does the AI summary of this part contain the answer? (full / partial / none)
          "summary_coverage": q.get("summary_coverage", "")}
         for part, qs in materials["questions"].items()
         for q in qs
@@ -47,21 +45,23 @@ def answer_key(materials: dict) -> pd.DataFrame:
 
 
 def split_pilot(app: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Separate real participants from pilot sessions."""
     is_pilot = app["is_pilot"].astype(str).str.strip().str.lower().isin(["true", "1", "yes"])
     return app[~is_pilot].copy(), app[is_pilot].copy()
 
 
 def to_raw_tables(app: pd.DataFrame, n_questions: int) -> dict[str, pd.DataFrame]:
+    """Reshape one row per participant into one row per participant and part."""
     quiz, assign, process = [], [], []
     for _, r in app.iterrows():
         for video, (p, order) in PARTS.items():
-            quiz.append({"participant_id": r["participant_id"], "video": video, "timepoint": "immediate",
+            quiz.append({"participant_id": r["participant_id"], "video": video,
                          **{f"q{i:02d}": r.get(f"{p}_q{i:02d}") for i in range(1, n_questions + 1)}})
             assign.append({"participant_id": r["participant_id"], "sequence": r["sequence"],
                            "session_order": order, "video": video, "method": r[f"{p}_method"]})
             process.append({"participant_id": r["participant_id"], "video": video, "session_order": order,
                             **{k: r.get(f"{p}_{k}") for k in PROCESS}})
-    participants = app[["participant_id", "sequence", "started_at", "completed_at", *BACKGROUND]].copy()
+    participants = app[["participant_id", "sequence", *BACKGROUND]].copy()
     return {
         "quiz_responses.csv": pd.DataFrame(quiz),
         "assignments.csv": pd.DataFrame(assign),
@@ -71,38 +71,34 @@ def to_raw_tables(app: pd.DataFrame, n_questions: int) -> dict[str, pd.DataFrame
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--app-file", type=Path, default=DATA_RAW / "app_responses.csv")
     parser.add_argument("--out-dir", type=Path, default=DATA_RAW)
     parser.add_argument("--pilot-dir", type=Path, default=ROOT / "data" / "pilot")
-    parser.add_argument("--alloc-file", type=Path, default=DATA_RAW / "app_allocations.csv")
     args = parser.parse_args(argv)
 
+    # First we load the export and the quiz questions
     materials = json.loads(MATERIALS.read_text(encoding="utf-8"))
     n_questions = len(materials["questions"]["A"])
     app = pd.read_csv(args.app_file, dtype=str)
 
+    # We keep only the first row if someone appears twice
     dupes = app.duplicated("participant_id", keep="first")
     if dupes.any():
         print(f"Dropping {int(dupes.sum())} duplicate participant row(s) (kept first).")
         app = app[~dupes]
 
+    # Then we set pilot sessions aside so they never reach the analysis
     real, pilot = split_pilot(app)
-    args.out_dir.mkdir(parents=True, exist_ok=True)
     if len(pilot):
         args.pilot_dir.mkdir(parents=True, exist_ok=True)
         pilot.to_csv(args.pilot_dir / "app_responses_pilot.csv", index=False)
 
+    # Finally we write the tables
+    args.out_dir.mkdir(parents=True, exist_ok=True)
     for name, df in to_raw_tables(real, n_questions).items():
         df.to_csv(args.out_dir / name, index=False)
     answer_key(materials).to_csv(args.out_dir / "answer_key.csv", index=False)
-
-    if args.alloc_file.exists():
-        alloc_real, _ = split_pilot(pd.read_csv(args.alloc_file, dtype=str))
-        alloc_real = alloc_real.drop_duplicates("participant_id")
-        alloc_real["completed"] = alloc_real["participant_id"].isin(real["participant_id"])
-        alloc_real.to_csv(args.out_dir / "allocations.csv", index=False)
-        print(f"{len(alloc_real)} starts, {int(alloc_real['completed'].sum())} completed (allocations.csv)")
     print(f"{len(real)} participants ingested ({len(pilot)} pilot rows set aside) -> {args.out_dir}")
 
 

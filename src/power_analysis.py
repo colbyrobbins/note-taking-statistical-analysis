@@ -1,4 +1,4 @@
-"""A priori power analysis for the paired t-test.
+"""This script runs the a priori power analysis for the paired t-test.
 
 Each participant is tested under both methods, so we compare their two quiz scores with a
 two-tailed paired t-test. The effect size for this design is Cohen's d_z: the mean of the
@@ -36,7 +36,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DZ = 0.6
 ALPHA = 0.05
 POWER = 0.80
-TARGET_N = 30  # 24 plus room for about 20% exclusions
+TARGET_N = 30  # 24 plus a safety margin
 
 
 def paired_t_power(n: int, dz: float, alpha: float = ALPHA) -> float:

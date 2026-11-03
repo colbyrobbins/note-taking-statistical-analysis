@@ -1,0 +1,25 @@
+question,answer,n
+sequence,1,8
+sequence,2,8
+age_range,18-24,10
+age_range,25-34,3
+age_range,45 or older,3
+student_status,No,5
+student_status,"Yes, at Duke",8
+student_status,"Yes, at another university",3
+native_english,No,5
+native_english,Yes,11
+device,Laptop or desktop computer,9
+device,Phone,7
+usual_note_method,By hand on paper,5
+usual_note_method,I rarely take notes,4
+usual_note_method,I use AI summaries,2
+usual_note_method,On a laptop or tablet,5
+ai_summary_use,Daily,5
+ai_summary_use,Monthly,2
+ai_summary_use,Never,1
+ai_summary_use,Rarely,4
+ai_summary_use,Weekly,4
+prior_knowledge,1,11
+prior_knowledge,2,4
+prior_knowledge,3,1

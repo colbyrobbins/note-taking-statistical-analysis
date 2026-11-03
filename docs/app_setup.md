@@ -97,12 +97,11 @@ written *before* Part 1: `participant_id`, `is_pilot`, `app_version`, `sequence`
 | `sequence` | 1 = Part 1 handwritten / Part 2 AI; 2 = Part 1 AI / Part 2 handwritten |
 | `taken_before_or_seen_video` | Always "No" in saved rows: "Yes" (did the study before, even partly, or had seen the video) ends the session and nothing is saved |
 | `age_range`, `student_status`, `native_english` | Sample description |
-| `device` | Laptop/desktop, tablet or phone; covariate (watching on a phone may lower scores) |
+| `device` | Device used: laptop/desktop, tablet or phone |
 | `usual_note_method`, `ai_summary_use` | Note-taking and AI habits; exploratory moderators |
-| `prior_knowledge` (1–5) | Exclusion rule (≥ 4) |
+| `prior_knowledge` (1–5) | Self-rated prior knowledge of tardigrades |
 | `attention_check` | Must equal `Often` |
 | `p1_*` / `p2_*` `method` | Method used for that half |
-| `p1_*` / `p2_*` `watch_seconds`, `review_seconds`, `review_timed_out`, `quiz_seconds` | Timing; review is self-paced with no time limit |
 | `p1_q01`…`p1_q06`, `p2_q01`…`p2_q06` | Chosen option (A–D); scored later against `answer_key.csv` |
 | `p1_*` / `p2_*` `predicted_correct` (0–6) | Self-predicted score (confidence gap) |
 | `p1_*` / `p2_*` `compliance` | Followed the method (Yes / No): "No" if they ticked "did not take handwritten notes" or "did not read the AI summary" |
