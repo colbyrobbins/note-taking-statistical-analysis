@@ -226,3 +226,6 @@ data/simulated/
 # Local app responses
 data/app_responses/
 .venv/
+
+# macOS
+.DS_Store

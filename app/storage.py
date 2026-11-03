@@ -1,4 +1,4 @@
-"""Where responses are saved.
+"""This module saves the responses collected by the app.
 
 - Deployed (Streamlit Community Cloud): a Google Sheet, configured in .streamlit/secrets.toml
   with a `gcp_service_account` table and a `sheet_key` string (see docs/app_setup.md).

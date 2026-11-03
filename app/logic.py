@@ -1,6 +1,6 @@
-"""Pure study logic for the data-collection app (no Streamlit imports, so it is unit-testable).
+"""This module holds the study logic used by the app (no Streamlit imports, so it is easy to test).
 
-Design (see docs/protocol.md):
+Design (see README.md):
     One video split into two halves, A (Part 1) and B (Part 2), always watched in that order.
     Each participant uses one note-taking method per half; the method order is counterbalanced:
         sequence 1: Part 1 handwritten, Part 2 AI summary

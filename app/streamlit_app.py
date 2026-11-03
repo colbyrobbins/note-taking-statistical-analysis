@@ -1,4 +1,4 @@
-"""Note-Taking & Learning Study: data-collection app (AIPI 510, Module Project 2).
+"""This script is the Streamlit app participants used to take part in the study (AIPI 510, Module Project 2).
 
 Run locally:      streamlit run app/streamlit_app.py
 Pilot mode:       add ?pilot=1 to the URL (rows are flagged and excluded from analysis)
